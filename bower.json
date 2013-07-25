@@ -1,0 +1,20 @@
+{
+  "name": "bastion",
+  "version": "0.0.1",
+  "dependencies": {
+    "backbone": "~1.0.0",
+    "jquery": "~2.0.3",
+    "bootstrap": "~2.3.2",
+    "underscore": "~1.5.1",
+    "bootstrap-notify": "~0.1.0",
+    "backbone-validation": "~0.8.0",
+    "backbone.paginator": "~0.8.1",
+    "font-awesome": "~3.2.1",
+    "backbone.marionette": "~1.0.4",
+    "async": "~0.2.5"
+  },
+  "resolutions": {
+    "jquery": "~2.0.3",
+    "underscore": "~1.5.1"
+  }
+}
