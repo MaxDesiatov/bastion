@@ -12,7 +12,8 @@
     "font-awesome": "~3.2.1",
     "backbone.marionette": "~1.0.4",
     "async": "~0.2.5",
-    "requirejs": "~2.1.8"
+    "requirejs": "~2.1.8",
+    "jade": "~0.34.1"
   },
   "resolutions": {
     "jquery": "~2.0.3"
