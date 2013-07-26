@@ -6,8 +6,7 @@
     "locomotive": "~0.3.6",
     "express": "3.x.x",
     "connect-powered-by": "0.1.x",
-    "ejs": "0.8.x",
-    "jade": "~0.33.0",
+    "jade": "~0.31.0",
     "passport-local": "~0.1.6",
     "passport": "~0.1.17",
     "connect-couchdb": "~0.4.1",
@@ -28,7 +27,8 @@
     "grunt-contrib-copy": "~0.4.1",
     "grunt-concurrent": "~0.3.0",
     "grunt-bower-postinst": "~0.2.0",
-    "grunt-bower-task": "~0.2.3",
-    "grunt-jade": "https://github.com/explicitcall/grunt-jade/tarball/0.5.0"
+    "grunt-bower-task": "https://github.com/xzyfer/grunt-bower-task/tarball/devel",
+    "grunt-contrib-jade": "~0.7.0",
+    "grunt-rename": "~0.1.2"
   }
 }

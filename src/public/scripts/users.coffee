@@ -1,4 +1,4 @@
-define ["backbone", "jquery"], (Backbone, $) ->
+define ['backbone', 'jquery', '../views/users', 'bootstrap'], (Backbone, $, templates) ->
   User = Backbone.Model.extend
     idAttribute: "_id"
     defaults:
@@ -9,7 +9,7 @@ define ["backbone", "jquery"], (Backbone, $) ->
 
   Users = Backbone.Collection.extend
     model: User
-    url: "/users/api"
+    url: "/users"
 
   UserView = Backbone.View.extend
     tagName: "tr",
@@ -20,12 +20,12 @@ define ["backbone", "jquery"], (Backbone, $) ->
       @listenTo @model, "change", @render
 
     render: ->
-      @$el.html jade.render 'users.model',
+      @$el.html templates.item
         user: @model.attributes
         cid: @model.cid
 
     edit: ->
-      @$el.html jade.render 'users.model.edit',
+      @$el.html templates.edit
         user: @model.attributes
         cid: @model.cid
 
@@ -33,9 +33,7 @@ define ["backbone", "jquery"], (Backbone, $) ->
         @changePassword()
 
     changePassword: ->
-      @$el.html jade.render 'users.model.password',
-        user: @model.attributes
-        cid: @model.cid
+      @$el.html templates.password()
       errorMessage = $(@$el).find('.text-error')
       errorMessageDisplayed = false
       $(@$el).find('input[type=password]').keypress ->
@@ -83,7 +81,7 @@ define ["backbone", "jquery"], (Backbone, $) ->
   Workspace = Backbone.Router.extend
     routes:
       "index": (fetch) ->
-        $('#user-index').html jade.render 'users.index'
+        $('#user-index').html templates.index()
         m = $('#remove-modal')
         m.modal show: false
         m.on 'hidden', -> workspace.navigate 'index'
@@ -144,8 +142,6 @@ define ["backbone", "jquery"], (Backbone, $) ->
         u.view.edit()
         $('#user-table tr:first-child').after u.view.el
 
-  console.log "users module loaded"
-  x: 5
-  # Backbone.history.start()
-  # workspace = new Workspace
-  # workspace.routes.index true
+  Backbone.history.start()
+  workspace = new Workspace
+  workspace.routes.index true

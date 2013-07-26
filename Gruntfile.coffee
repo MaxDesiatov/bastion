@@ -8,7 +8,7 @@ module.exports = (grunt) ->
   # load all grunt tasks
   require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
 
-  debugConfig =
+  debugConfigJs =
     'async/lib': 'async.js'
     'backbone-amd': 'backbone.js'
     'backbone-validation/dist': 'backbone-validation-amd.js'
@@ -17,22 +17,40 @@ module.exports = (grunt) ->
     'backbone.paginator/dist': 'backbone.paginator.js'
     'backbone.wreqr/lib/amd': 'backbone.wreqr.js'
     'bootstrap/bootstrap/js': 'bootstrap.js'
-    'font-awesome/css': 'font-awesome.css'
     'jquery': 'jquery.js'
     'requirejs': 'require.js'
     'underscore-amd': 'underscore.js'
     'jade': 'runtime.js'
 
+  debugConfigCss =
+    'bootstrap/bootstrap/css': 'bootstrap.css'
+    'font-awesome/css': 'font-awesome.css'
+
   debugFiles =
-    for lib, file of debugConfig
+    for lib, file of debugConfigJs
       expand: true
-      cwd: 'components/' + lib
+      cwd: 'bower_components/' + lib
       dest: 'dist/public/scripts'
       src: file
+  for lib, file of debugConfigCss
+    debugFiles.push
+      expand: true
+      cwd: 'bower_components/' + lib
+      dest: 'dist/public/stylesheets'
+      src: file
+  debugFiles.push
+    expand: true
+    cwd: 'bower_components/font-awesome/'
+    src: 'font/*'
+    dest: 'dist/public/'
 
   viewsConfig =
-    'header.*.jade': 'header.js'
-    'users.*.jade': 'users.js'
+    'header/*.jade': 'header.js'
+    'users/*.jade': 'users.js'
+
+  viewsFiles = {}
+  for source, destination of viewsConfig
+    viewsFiles['dist/public/views/' + destination] = 'src/public/views/' + source
 
   grunt.initConfig
     watch:
@@ -42,10 +60,13 @@ module.exports = (grunt) ->
       server:
         files: ['src/**/*.coffee']
         tasks: ['coffee']
+      jade:
+        files: ['src/**/*.jade']
+        tasks: ['copy:jade']
 
     clean:
       dist: ['dist']
-      components: ['components']
+      components: ['bower_components']
 
     bower:
       install:
@@ -55,7 +76,6 @@ module.exports = (grunt) ->
     bower_postinst:
       dist:
         options:
-          directory: 'components'
           components:
             'bootstrap': ['npm', {'make': 'bootstrap' }]
 
@@ -86,19 +106,20 @@ module.exports = (grunt) ->
           src: ['app/views/**/*.jade']
         }]
 
+    rename:
+      jadeRuntime:
+        src: 'dist/public/scripts/runtime.js'
+        dest: 'dist/public/scripts/jade.js'
+
     jade:
       client:
         options:
-          wrap: 'amd'
-          runtime: false
-          wrapDir: false
-        files: [{
-          expand: true
-          cwd: 'src'
-          dest: 'dist'
-          src: ['public/views/**/*.jade']
-          ext: '.js'
-        }]
+          client: true
+          amd: true
+          processName: (name) ->
+            newName = name.replace(/.*\/([A-Za-z]+)\.jade/, '$1')
+            return newName
+        files: viewsFiles
 
     nodemon:
       lcm:
@@ -124,7 +145,8 @@ module.exports = (grunt) ->
     'coffee',
     'stylus',
     'jade',
-    'copy'
+    'copy',
+    'rename'
   ]
 
   grunt.registerTask 'default', [

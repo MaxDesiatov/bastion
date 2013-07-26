@@ -2,10 +2,9 @@ doctype 5
 html
   head
     title= title
+    link(rel="stylesheet", href="/stylesheets/bootstrap.css")
+    link(rel="stylesheet", href="/stylesheets/font-awesome.css")
     link(rel="stylesheet", href="/stylesheets/style.css")
     script(data-main="scripts/main", src="scripts/require.js")
   body
-    h1= title
-    p Welcome aboard! Visit&nbsp;
-      a(href="http://locomotivejs.org/") locomotivejs.org
-      | &nbsp;for details.
+    div#user-index

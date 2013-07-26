@@ -6,7 +6,7 @@ UsersController = new locomotive.Controller()
 
 _(UsersController).extend
   index: ->
-    users.all (err, all) ->
+    users.all (err, all) =>
       if err?
         @res.send 500, err
       else
@@ -25,7 +25,7 @@ _(UsersController).extend
   create: -> @update()
 
   update: ->
-    users.modifyOrCreate @req.body, (err, modifyResponse) ->
+    users.modifyOrCreate @req.body, (err, modifyResponse) =>
       if err?
         @res.send 500, err
       else
@@ -35,7 +35,7 @@ _(UsersController).extend
 
   destroy: ->
     if @req.params.userid?
-      users.remove @req.params.userid, (err) ->
+      users.remove @req.params.userid, (err) =>
         if err?
           @res.send 500, err
         else
@@ -47,7 +47,7 @@ _(UsersController).extend
     if @req.body and @req.body.password and _.isString(@req.body.password) and
     @req.body.password.length > 0 and @req.params and @req.params.userid and
     _.isString(@req.params.userid) and @req.params.userid.length > 0
-      users.setPassword @req.params.userid, @req.body.password, (err) ->
+      users.setPassword @req.params.userid, @req.body.password, (err) =>
         if err?
           @res.send 500, err
         else
