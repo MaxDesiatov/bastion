@@ -48,6 +48,80 @@ module.exports = (grunt) ->
         sourceMap: true
 
     copy:
+      debug:
+        files: [{
+          expand: true
+          cwd: 'components/async/lib'
+          dest: 'dist/public/scripts'
+          src: 'async.js'
+        },
+        {
+          expand: true
+          cwd: 'components/backbone-amd'
+          dest: 'dist/public/scripts'
+          src: 'backbone.js'
+        },
+        {
+          expand: true
+          cwd: 'components/backbone-validation/dist'
+          dest: 'dist/public/scripts'
+          src: 'backbone-validation-amd.js'
+        },
+        {
+          expand: true
+          cwd: 'components/backbone.babysitter/lib/amd'
+          dest: 'dist/public/scripts'
+          src: 'backbone.babysitter.js'
+        },
+        {
+          expand: true
+          cwd: 'components/backbone.marionette/lib/core/amd'
+          dest: 'dist/public/scripts'
+          src: 'backbone.marionette.js'
+        },
+        {
+          expand: true
+          cwd: 'components/backbone.paginator/dist'
+          dest: 'dist/public/scripts'
+          src: 'backbone.paginator.js'
+        },
+        {
+          expand: true
+          cwd: 'components/backbone.wreqr/lib/amd'
+          dest: 'dist/public/scripts'
+          src: 'backbone.wreqr.js'
+        },
+        {
+          expand: true
+          cwd: 'components/bootstrap/bootstrap/js'
+          dest: 'dist/public/scripts'
+          src: 'bootstrap.js'
+        },
+        {
+          expand: true
+          cwd: 'components/font-awesome/css'
+          dest: 'dist/public/stylesheets'
+          src: 'font-awesome.css'
+        },
+        {
+          expand: true
+          cwd: 'components/jquery'
+          dest: 'dist/public/scripts'
+          src: 'jquery.js'
+        },
+        {
+          expand: true
+          cwd: 'components/requirejs'
+          dest: 'dist/public/scripts'
+          src: 'require.js'
+        },
+        {
+          expand: true
+          cwd: 'components/underscore-amd'
+          dest: 'dist/public/scripts'
+          src: 'underscore.js'
+        }]
+
       jade:
         files: [{
           expand: true
@@ -76,10 +150,14 @@ module.exports = (grunt) ->
     'bower_postinst'
   ]
 
-  grunt.registerTask 'default', [
+  grunt.registerTask 'dist', [
     'clean:dist',
     'coffee',
     'stylus',
-    'copy',
+    'copy'
+  ]
+
+  grunt.registerTask 'default', [
+    'dist',
     'concurrent'
   ]

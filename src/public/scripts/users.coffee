@@ -1,4 +1,4 @@
-$(document).ready ->
+define ["backbone", "jquery"], (Backbone, $) ->
   User = Backbone.Model.extend
     idAttribute: "_id"
     defaults:
@@ -144,6 +144,8 @@ $(document).ready ->
         u.view.edit()
         $('#user-table tr:first-child').after u.view.el
 
-  Backbone.history.start()
-  workspace = new Workspace
-  workspace.routes.index true
+  console.log "users module loaded"
+  x: 5
+  # Backbone.history.start()
+  # workspace = new Workspace
+  # workspace.routes.index true
