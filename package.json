@@ -1,7 +1,7 @@
 {
   "name": "bastion",
   "version": "0.0.1",
-  "private": true,
+  "preferGlobal": true,
   "dependencies": {
     "locomotive": "~0.3.6",
     "express": "3.x.x",
