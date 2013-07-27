@@ -33,9 +33,9 @@ _(UsersController).extend
         responseObject._id = modifyResponse.id
         @res.send 200, responseObject
 
-  destroy: ->
-    if @req.params.userid?
-      users.remove @req.params.userid, (err) =>
+  destroy: (uid) ->
+    if @param('id')
+      users.remove @param('id'), (err) =>
         if err?
           @res.send 500, err
         else

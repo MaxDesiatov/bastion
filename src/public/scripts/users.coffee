@@ -19,7 +19,7 @@ define [
     model: User
     url: '/users'
 
-  modal = $('#user-remove-modal')
+  modal = null
 
   class UserView extends Marionette.ItemView
     isEditing: false
@@ -30,7 +30,10 @@ define [
       'change': 'render'
 
     events:
+      'click input[type=password]': 'clearErrorMessage'
+      'click .save-password-button': 'savePassword'
       'click .change-password-button': 'changePassword'
+      'click .cancel-password-button': 'cancelPassword'
       'click .user-edit-button': 'edit'
       'click .user-remove-button': 'removeSelf'
       'click .user-save-button': 'save'
@@ -42,7 +45,14 @@ define [
       Marionette.ItemView.prototype.constructor.apply this, args
 
     template: (data) ->
-      t = if @model.isNew() or @isEditing then templates.edit else templates.item
+      t =
+        if @model.isNew() or @isEditing
+          if @isChangingPassword
+            templates.password
+          else
+            templates.edit
+        else
+          templates.item
       t
         user: data
         cid: data.cid
@@ -70,7 +80,7 @@ define [
 
     save: ->
       changes = {}
-      _(['name', 'firstName', 'lastName', 'group']).each (prop) ->
+      _(['name', 'firstName', 'lastName', 'group']).each (prop) =>
         changes[prop] = $(@$el).find("[name=#{prop}]").val()
       if changes.name.length < 1
         $('.notifications').notify(
@@ -78,51 +88,57 @@ define [
           type: 'blackgloss').show()
         return
       sameName = users.findWhere name: changes.name
-      if sameName? and sameName.cid isnt userid
+      if sameName? and sameName.cid isnt @model.cid
         $('.notifications').notify(
           message: text: 'User with same name already exists'
           type: 'blackgloss').show()
       else
-        @isEditing = false
-        @model.save changes
+        @model.save changes, success: =>
+          @isEditing = false
+          @render()
+
+    cancelPassword: ->
+      @isChangingPassword = false
+      @render()
+
+    savePassword: ->
+      errorMessage = $(@$el).find('.text-error')
+      password = $(@$el).find('[name=password]').val()
+      repeat = $(@$el).find('[name=repeat]').val()
+      if password isnt repeat
+        errorMessage.text "Passwords aren't equal!"
+        @errorMessageDisplayed = true
+        errorMessage.addClass 'in'
+      else if password.length < 1
+        errorMessage.text 'Password not entered'
+        @errorMessageDisplayed = true
+        errorMessage.addClass 'in'
+      else
+        $.ajax
+          url: "#{@model.url()}/password"
+          data: JSON.stringify password: password
+          cache: false,
+          contentType: 'application/json'
+          processData: false
+          type: 'PUT'
+          success: () =>
+            @render()
+            workspace.navigate 'index'
+          error: () =>
+            errorMessage.text 'Error while changing password'
+            @errorMessageDisplayed = true
+            errorMessage.addClass 'in'
+
+    clearErrorMessage: ->
+      if @errorMessageDisplayed
+        errorMessage = $(@$el).find('.text-error')
+        errorMessage.removeClass 'in'
+        @errorMessageDisplayed = false
 
     changePassword: ->
-      @$el.html templates.password()
-      errorMessage = $(@$el).find('.text-error')
-      errorMessageDisplayed = false
-      $(@$el).find('input[type=password]').keypress ->
-        if errorMessageDisplayed
-          errorMessage.removeClass 'in'
-          errorMessageDisplayed = false
-      $(@$el).find('.cancel-password-button').click =>
-        @render()
-        workspace.navigate 'index'
-      $(@$el).find('.save-password-button').click =>
-        password = $(@$el).find('[name=password]').val()
-        repeat = $(@$el).find('[name=repeat]').val()
-        if password isnt repeat
-          errorMessage.text "Passwords aren't equal!"
-          errorMessageDisplayed = true
-          errorMessage.addClass 'in'
-        else if password.length < 1
-          errorMessage.text 'Password not entered'
-          errorMessageDisplayed = true
-          errorMessage.addClass 'in'
-        else
-          $.ajax
-            url: "#{@model.url()}/password"
-            data: JSON.stringify password: password
-            cache: false,
-            contentType: 'application/json'
-            processData: false
-            type: 'PUT'
-            success: () =>
-              @render()
-              workspace.navigate 'index'
-            error: () ->
-              errorMessage.text 'Error while changing password'
-              errorMessageDisplayed = true
-              errorMessage.addClass 'in'
+      @isChangingPassword = true
+      @render()
+      @errorMessageDisplayed = false
 
   users = new Users
 
@@ -131,6 +147,9 @@ define [
     itemView: UserView
 
     template: -> templates.table()
+
+    onRender: ->
+      modal = $('#user-remove-modal')
 
     appendHtml: (collectionView, itemView, index) ->
       childrenContainer = $(collectionView.childrenContainer or collectionView.el)
