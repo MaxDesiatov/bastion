@@ -1,5 +1,6 @@
 requirejs.config
   shim:
-    bootstrap: ["jquery"]
+    bootstrap: ['jquery']
 
-define ['users'], (users) ->
+define ['app'], (app) ->
+    app.start()

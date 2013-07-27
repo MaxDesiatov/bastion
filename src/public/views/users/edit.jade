@@ -15,20 +15,12 @@ td.vmiddle
                  data-toggle="popover",
                  data-placement="right")
      small.muted &nbsp;[?]
-  :coffeescript
-    content = "<small class='muted'><p><b>Admin</b> is allowed everything.</p>" +
-    "<p><b>Member</b> is same as admin, but has User Management page inaccessible.</p>" +
-    "<p><b>Guest</b> is same as member, but can't edit anything.</p></small>"
-    $('.role-help').popover
-      content: content
-      html: true
-      trigger: 'hover'
 td.edit
   if user._id
     btn.btn.user-edit-button.change-password-button
       i.icon-lock
-  a.btn.user-edit-button(href='#save/' + cid)
+  a.btn.user-save-button(title='save')
     i.icon-ok
   if !user._id
-    a.btn.user-edit-button(href='#remove/' + cid)
+    a.btn.user-remove-button(title='remove')
       i.icon-remove

@@ -1,13 +1,5 @@
-div#remove-modal.modal.hide.fade(tabindex="-1",
+div#user-remove-modal.modal.hide.fade(tabindex="-1",
                                  role="dialog")
-  div.modal-header
-    button.close(type="button", data-dismiss="modal") ×
-    h3#remove-modal-label Please confirm
-  div.modal-body
-    p One fine body…
-  div.modal-footer
-    a.btn(data-dismiss='modal') Cancel
-    a.btn.btn-primary Confirm
 
 div.notifications.top-right.top-bar
 
@@ -16,15 +8,9 @@ div.row
     h3 User Management
 
   div.span1
-    a.table-new#user-new.btn.pull-right(href='#new', title='new user')
+    a.table-new#user-new.btn.pull-right(title='new user')
       i.icon-plus
 
 div.row
   div.span12
     table.table.table-fixed#user-table
-      tr
-        th Username
-        th First Name
-        th Last Name
-        th Role
-        th.edit Edit

@@ -60,9 +60,12 @@ module.exports = (grunt) ->
       server:
         files: ['src/**/*.coffee']
         tasks: ['coffee']
-      jade:
-        files: ['src/**/*.jade']
+      serverJade:
+        files: ['src/app/**/*.jade']
         tasks: ['copy:jade']
+      clientJade:
+        files: ['src/public/**/*.jade']
+        tasks: ['jade']
 
     clean:
       dist: ['dist']

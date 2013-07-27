@@ -1,4 +1,12 @@
-define ['backbone', 'jquery', '../views/users', 'bootstrap'], (Backbone, $, templates) ->
+define [
+  'backbone',
+  'backbone.marionette',
+  'jquery',
+  '../views/users',
+  'require',
+  'app',
+  'bootstrap'], (Backbone, Marionette, $, templates, require, app) ->
+
   User = Backbone.Model.extend
     idAttribute: "_id"
     defaults:
@@ -9,28 +17,74 @@ define ['backbone', 'jquery', '../views/users', 'bootstrap'], (Backbone, $, temp
 
   Users = Backbone.Collection.extend
     model: User
-    url: "/users"
+    url: '/users'
 
-  UserView = Backbone.View.extend
-    tagName: "tr",
+  modal = $('#user-remove-modal')
 
-    className: "user-row",
+  class UserView extends Marionette.ItemView
+    isEditing: false
+    tagName: 'tr'
+    className: 'user-row'
 
-    initialize: ->
-      @listenTo @model, "change", @render
+    modelEvents:
+      'change': 'render'
 
-    render: ->
-      @$el.html templates.item
-        user: @model.attributes
-        cid: @model.cid
+    events:
+      'click .change-password-button': 'changePassword'
+      'click .user-edit-button': 'edit'
+      'click .user-remove-button': 'removeSelf'
+      'click .user-save-button': 'save'
+
+    # workaround for template not bind before invocation by marionette.js
+    constructor: ->
+      @template = _.bind(@template, @)
+      args = Array.prototype.slice.apply arguments
+      Marionette.ItemView.prototype.constructor.apply this, args
+
+    template: (data) ->
+      t = if @model.isNew() or @isEditing then templates.edit else templates.item
+      t
+        user: data
+        cid: data.cid
 
     edit: ->
-      @$el.html templates.edit
-        user: @model.attributes
-        cid: @model.cid
+      @isEditing = true
+      @render()
 
-      $(@$el).find('.change-password-button').click =>
-        @changePassword()
+    onRender: ->
+      if @isEditing
+        $('.role-help').popover
+          content: templates.help()
+          html: true
+          trigger: 'hover'
+
+    removeSelf: ->
+      if not @model.isNew()
+        modal.html templates.modal name: @model.get 'name'
+        modal.find('.btn-primary').click =>
+          @model.destroy()
+          modal.modal 'hide'
+        modal.modal 'show'
+      else
+        users.remove @model
+
+    save: ->
+      changes = {}
+      _(['name', 'firstName', 'lastName', 'group']).each (prop) ->
+        changes[prop] = $(@$el).find("[name=#{prop}]").val()
+      if changes.name.length < 1
+        $('.notifications').notify(
+          message: text: 'Empty username'
+          type: 'blackgloss').show()
+        return
+      sameName = users.findWhere name: changes.name
+      if sameName? and sameName.cid isnt userid
+        $('.notifications').notify(
+          message: text: 'User with same name already exists'
+          type: 'blackgloss').show()
+      else
+        @isEditing = false
+        @model.save changes
 
     changePassword: ->
       @$el.html templates.password()
@@ -72,76 +126,40 @@ define ['backbone', 'jquery', '../views/users', 'bootstrap'], (Backbone, $, temp
 
   users = new Users
 
-  indexRefresh = (c) ->
-    c.each (u) ->
-      u.view = new UserView model: u
-      u.view.render()
-      $('#user-table').append u.view.el
+  class UsersTable extends Marionette.CompositeView
+    collection: users
+    itemView: UserView
 
-  Workspace = Backbone.Router.extend
-    routes:
-      "index": (fetch) ->
-        $('#user-index').html templates.index()
-        m = $('#remove-modal')
-        m.modal show: false
-        m.on 'hidden', -> workspace.navigate 'index'
-        $('#remove-modal .btn-primary').click ->
-          m.modal 'hide'
-        if _.isBoolean fetch and fetch
-          users.fetch
-            success: indexRefresh
-        else
-          indexRefresh users
+    template: -> templates.table()
 
-      "edit/:userid": (userid) ->
-        if Backbone.history.fragment isnt 'index'
-          @routes.index
-        users.get(userid).view.edit()
+    appendHtml: (collectionView, itemView, index) ->
+      childrenContainer = $(collectionView.childrenContainer or collectionView.el)
+      children = childrenContainer.children()
+      if children.size() is index
+        childrenContainer.append itemView.el
+      else
+        childrenContainer.children().eq(index).after itemView.el
 
-      "remove/:userid(/:confirm)": (userid, confirm) ->
-        u = users.get(userid)
-        if not u.isNew() and not confirm
-          $('#remove-modal .btn-primary').attr 'href', "#remove/#{userid}/yes"
-          $('#remove-modal .modal-body p').text "Are you sure you want " +
-            "to remove user \"#{u.get 'name'}\"?"
-          $('#remove-modal').modal 'show'
-        else
-          if not u.isNew()
-            u.destroy()
-          u.view.remove()
-          workspace.navigate 'index'
+  usersTable = new UsersTable
 
-      "save/:userid": (userid) ->
-        u = users.get userid
-        changes = {}
-        _(['name', 'firstName', 'lastName', 'group']).each (prop) ->
-          changes[prop] = $(u.view.$el).find("[name=#{prop}]").val()
-        if changes.name.length < 1
-          $('.notifications').notify(
-            message: text: 'Empty username'
-            type: 'blackgloss').show()
-          workspace.navigate "edit/#{userid}"
-          return
-        sameName = users.findWhere name: changes.name
-        if sameName? and sameName.cid isnt userid
-          $('.notifications').notify(
-            message: text: 'User with same name already exists'
-            type: 'blackgloss').show()
-          workspace.navigate "edit/#{userid}"
-        else
-          u.save changes
-          u.view.render()
-          workspace.navigate 'index'
+  class IndexLayout extends Marionette.Layout
+    regions:
+      table: '#user-table'
 
-      "new": ->
-        if Backbone.history.fragment isnt 'index'
-          @routes.index
-        u = new User
-        users.add u
-        u.view = new UserView model: u
-        u.view.edit()
-        $('#user-table tr:first-child').after u.view.el
+    events:
+      'click #user-new': 'create'
 
-  Backbone.history.start()
-  workspace = new Workspace
-  workspace.routes.index true
+    create: ->
+      users.add new User
+      users
+
+    template: -> templates.index()
+
+  indexLayout = new IndexLayout
+
+  {
+    "index": (fetch) ->
+      users.fetch success: ->
+        require('app').content.show indexLayout
+        indexLayout.table.show usersTable
+  }
