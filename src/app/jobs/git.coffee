@@ -2,6 +2,7 @@
 exec = require('child_process').exec
 # cli colors
 colors = require 'colors'
+jobs = require '../models/jobs'
 
 # callback to be used once git it good to go
 readyCallback = null
@@ -27,7 +28,7 @@ git = module.exports =
         path = require 'path'
 
         # get the full path to target and change the process to that directory
-        if target.toString().charAt(0) isnt '/'
+        if target? and target.toString().charAt(0) isnt '/'
             target = process.cwd()+'/'+target
         process.chdir target
 
@@ -49,7 +50,6 @@ git = module.exports =
     # pull from the git repo
     pull: (next)->
         # get the job list so we can queue jobs
-        jobs = require './jobs'
         out = "Pulling '#{git.branch}' branch"
         jobs.updateLog jobs.current, out, ->
             console.log out.grey

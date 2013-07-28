@@ -5,7 +5,7 @@ dbName = path.basename(process.cwd()).replace(/\./, "-")
 _ = require 'underscore'
 a = require 'async'
 
-concreteDb = new db '127.0.0.1', 5984, "concrete_#{ dbName }"
+concreteDb = new db '127.0.0.1', 5984, 'bastion'
 
 jobType = new Type concreteDb, 'job'
 

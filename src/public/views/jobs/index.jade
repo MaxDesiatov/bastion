@@ -1,11 +1,9 @@
-header
-  hgroup
-    h1 CONCRETE
-    h2.project= project
-    nav
-      a.btn.build Build
+div.row
+  div.span10
+    h3 Build Jobs
 
-div#jobs-content
-    ul.jobs
-      if jobs.length === 0
-        li.nojob No jobs have been submitted.
+  div.span1
+    a.table-new#job-new.btn.pull-right(title='create')
+      i.icon-plus
+
+div.row: div.span11#jobs-table

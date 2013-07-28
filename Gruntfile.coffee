@@ -44,13 +44,19 @@ module.exports = (grunt) ->
     src: 'font/*'
     dest: 'dist/public/'
 
-  viewsConfig =
-    'header/*.jade': 'header.js'
-    'users/*.jade': 'users.js'
-
-  viewsFiles = {}
-  for source, destination of viewsConfig
-    viewsFiles['dist/public/views/' + destination] = 'src/public/views/' + source
+  jadeConfig = {}
+  for view in ['header', 'users', 'jobs']
+    jadeConfig[view] =
+      options:
+        client: true
+        amd: true
+        namespace: 'JST.' + view
+        processName: (name) ->
+          newName = name.replace(/.*\/([A-Za-z]+)\.jade/, '$1')
+          return newName
+      files: {}
+    jadeConfig[view].files['dist/public/views/' + view + '.js'] =
+      'src/public/views/' + view + '/*.jade'
 
   grunt.initConfig
     watch:
@@ -114,15 +120,7 @@ module.exports = (grunt) ->
         src: 'dist/public/scripts/runtime.js'
         dest: 'dist/public/scripts/jade.js'
 
-    jade:
-      client:
-        options:
-          client: true
-          amd: true
-          processName: (name) ->
-            newName = name.replace(/.*\/([A-Za-z]+)\.jade/, '$1')
-            return newName
-        files: viewsFiles
+    jade: jadeConfig
 
     nodemon:
       lcm:

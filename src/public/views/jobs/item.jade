@@ -1,7 +1,10 @@
-li.job
+div.description
+  div.expand
+    i.icon-chevron-sign-down
   - var d = new Date(job.addedTime)
   div.time "#{d.toDateString()} #{d.toTimeString()}"
-    div.job_id "#{job._id.toString()}"
+    if job._id
+      div.id "#{job._id.toString()}"
     if job.finished
      - var outcomeClass = job.failed ? '.failure' : '.success'
       div(class=".outcome#{outcomeClass}")
@@ -11,4 +14,4 @@ li.job
           | &#10003;&nbsp;success
     else
       i.icon-spinner
-  div.job_container= job.log
+div.log!= job.log

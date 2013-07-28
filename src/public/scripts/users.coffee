@@ -168,11 +168,11 @@ define [
     events:
       'click #user-new': 'create'
 
-    create: ->
-      users.add new User
-      users
+    create: -> users.add new User
 
     template: -> templates.index()
+
+    onRender: -> @delegateEvents()
 
   indexLayout = new IndexLayout
 

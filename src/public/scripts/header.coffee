@@ -1,7 +1,7 @@
 define [
   'backbone',
   'backbone.marionette',
- '../views/header'], (Backbone, Marionette, templates) ->
+  '../views/header'], (Backbone, Marionette, templates) ->
 
   currentUser = new (Backbone.Model.extend
     idAttribute: "_id"
@@ -45,14 +45,41 @@ define [
         # user: data
         user: name: 'test-user'
 
+  cuView = new CurrentUserView
+
   class NavigationView extends Marionette.ItemView
     className: "nav"
     tagName: "ul"
     model: currentUser
+    currentlyActive: null
+    ui:
+      jobs: '#jobs-navigation'
+      users: '#users-navigation'
+
+    # workaround for template not bind before invocation by marionette.js
+    constructor: ->
+      @template = _.bind(@template, @)
+      args = Array.prototype.slice.apply arguments
+      Marionette.ItemView.prototype.constructor.apply this, args
+
     template: (data) ->
       templates.navigation
         # user: data
-        user: group: 'admin'
+        user:
+          group: 'admin'
+        active: @currentlyActive
+
+    onRoute: (route) ->
+      if route isnt @currentlyActive and @ui[@currentlyActive]?
+        if @currentlyActive?
+          @ui[@currentlyActive].removeClass 'active'
+        @ui[route].addClass 'active'
+      @currentlyActive = route
+
+  navigationView = new NavigationView
+
+  Backbone.history.on 'route', ->
+    navigationView.onRoute Backbone.history.fragment
 
   class HeaderLayout extends Marionette.Layout
     regions:
@@ -64,7 +91,7 @@ define [
       templates.header()
 
     onRender: ->
-      @currentUser.show new CurrentUserView
-      @navigation.show new NavigationView
+      @currentUser.show cuView
+      @navigation.show navigationView
 
   new HeaderLayout

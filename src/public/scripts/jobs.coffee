@@ -2,28 +2,35 @@ define [
   'backbone',
   'backbone.marionette',
   'jquery',
-  '../views/jobs'], (Backbone, Marionette, $, templates) ->
+  'underscore',
+  '../views/jobs'], (Backbone, Marionette, $, _, templates) ->
 
-  Job = Backbone.Model.extend
+  class Job extends Backbone.Model
     idAttribute: "_id"
     defaults:
       finished: false
       failed: false
       addedTime: null
 
-  Jobs = Backbone.Collection.extend
+  class Jobs extends Backbone.Collection
     model: Job
     url: '/jobs'
 
-  class UserView extends Marionette.ItemView
+  class JobView extends Marionette.ItemView
+    tagName: 'li'
+    className: 'job'
     modelEvents:
       'change': 'render'
 
     events:
-      'click li.job': 'expand'
+      'click .expand': 'expand'
 
     ui:
-      logs: '.job_container'
+      logs: '.log'
+
+    waitingForRefresh: false
+
+    template: (data) -> templates.item job: data
 
     expand: ->
       if @ui.logs.hasClass 'open'
@@ -32,34 +39,60 @@ define [
         @ui.logs.slideDown 'fast'
       @ui.logs.toggleClass 'open'
 
-  updateJob = (job) ->
-      id = $(job).find('.job_id').first().html()
-      $.get "/job/#{id}", (data) ->
-          $(job).find('.job_container').first().html(data.log)
-          if data.finished
-              $(job).find('a img.loader').remove()
-              $(job).find('a').first().append CoffeeKup.render outcomeTemplate, job: data
-              $('button.build').show()
-              return false
-          setTimeout ->
-              updateJob job
-          , 1000
-      , 'json'
+    onRender: ->
+      if not @waitingForRefresh
+        @refresh()
 
-  $('button.build').click (event) ->
-      closeAll()
-      $('button.build').hide()
-      $('li.nojob').hide()
-      $.post '/', (data) ->
-          if $('ul.jobs').find('li.nojob').length > 0
-             $('ul.jobs').find('li.nojob').first().remove()
-          job = $('ul.jobs').prepend CoffeeKup.render jobTemplate, job: data
-          job = $(job).find('li').first()
-          addClick job
-          updateJob job
-          $(job).find('.job_container').click()
-      , 'json'
-      return false
+    refresh: ->
+      if not @model.get 'finished'
+        @model.fetch success: =>
+          @waitingForRefresh = true
+          setTimeout (=> @refresh), 500
+      else
+        @waitingForRefresh = false
+        $('.btn.build').show()
 
-  $('li.job').each (iterator, job)->
-      addClick job
+  jobs = new Jobs
+
+  class Empty extends Marionette.ItemView
+    tagName: 'li'
+    className: 'nojobs'
+    template: -> 'No jobs have been submitted.'
+
+  class JobsTable extends Marionette.CollectionView
+    tagName: 'ul'
+    className: 'jobs'
+    itemView: JobView
+    emptyView: Empty
+    collection: jobs
+
+  jobsTable = new JobsTable
+
+  class IndexLayout extends Marionette.Layout
+    regions:
+      table: '#jobs-table'
+
+    ui:
+      buildButton: '#job-new'
+
+    events:
+      'click #job-new': 'build'
+
+    build: ->
+      @ui.buildButton.hide()
+      newJob = new Job
+      jobs.add newJob
+      newJob.save()
+
+    template: -> templates.index()
+
+    onRender: -> @delegateEvents()
+
+  indexLayout = new IndexLayout
+
+  {
+    "index": (fetch) ->
+      jobs.fetch success: ->
+        require('app').content.show indexLayout
+        indexLayout.table.show jobsTable
+  }

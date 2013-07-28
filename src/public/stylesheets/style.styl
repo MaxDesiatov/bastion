@@ -4,3 +4,60 @@ body
 
 a
   color #00B7FF
+
+ul.jobs
+  list-style-type none
+
+  li.job
+    text-decoration none
+
+    .description
+      i.icon-spinner
+        float right
+
+    &:last-child
+      .description
+        border-bottom 1px solid #E6E6E6
+
+    .description
+      cursor pointer
+      height 20px
+      padding 20px
+      display block
+      background-color #EEE
+      border-top 1px solid #E6E6E6
+      color #BBB
+
+    .id
+      float: left
+      font-size 16px
+      font-weight normal
+      color #666
+
+    .outcome
+      font 16px 'MenschRegular', sans-serif
+      float right
+
+    img.loader
+      float right
+
+    .expand
+      float left
+
+    .time
+      font 13px 'Monaco', courier, 'courier new', monospace
+      float left
+      margin-right 20px
+
+    &:hover
+      background-color #EAEAEA
+
+    .log
+      display none
+      padding 20px
+      background-color #333
+      font 13px 'Monaco', courier, 'courier new', monospace
+      color #777
+
+      span.output
+        color #DDD

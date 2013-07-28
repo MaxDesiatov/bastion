@@ -3,7 +3,7 @@ colors = require 'colors'
 git = require './git'
 server = require './server'
 exec = require('child_process').exec
-jobs = require './jobs'
+jobs = require '../models/jobs'
 fs = require 'fs'
 
 parseSequence = (input) ->
