@@ -1,0 +1,11 @@
+header
+  hgroup
+    h1 CONCRETE
+    h2.project= project
+    nav
+      a.btn.build Build
+
+div#jobs-content
+    ul.jobs
+      if jobs.length === 0
+        li.nojob No jobs have been submitted.
