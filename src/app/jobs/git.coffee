@@ -3,6 +3,7 @@ exec = require('child_process').exec
 # cli colors
 colors = require 'colors'
 jobs = require '../models/jobs'
+path = require 'path'
 
 # callback to be used once git it good to go
 readyCallback = null
@@ -25,27 +26,32 @@ git = module.exports =
         readyCallback = callback
 
         # we're using node's path to run directory level operations
-        path = require 'path'
 
         # get the full path to target and change the process to that directory
         if target? and target.toString().charAt(0) isnt '/'
             target = process.cwd()+'/'+target
-        process.chdir target
 
-        # set up git paths for concrete's post-build executions
-        git.target = path.normalize target+'/.git/'
-        git.failure = path.normalize target+'/.git/hooks/build-failed'
-        git.success = path.normalize target+'/.git/hooks/build-worked'
+        fs.existsSync target, (exists) ->
+          if not exists
+            console.log "'#{target}' does not exist".red
+            process.exit 1
+          else
+            process.chdir target
 
-        # make sure the path exists and is a valid repo
-        path.exists git.target, (exists)->
-            if exists is no
-                console.log "'#{target}' is not a valid Git repo".red
-                process.exit 1
-            getUser()
-            getPass()
-            getBranch()
-            getRunner()
+            # set up git paths for concrete's post-build executions
+            git.target = path.normalize target+'/.git/'
+            git.failure = path.normalize target+'/.git/hooks/build-failed'
+            git.success = path.normalize target+'/.git/hooks/build-worked'
+
+            # make sure the path exists and is a valid repo
+            fs.exists git.target, (exists)->
+                if exists is no
+                  console.log "'#{target}' is not a valid Git repo".red
+                  process.exit 1
+                getUser()
+                getPass()
+                getBranch()
+                getRunner()
 
     # pull from the git repo
     pull: (next)->
