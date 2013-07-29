@@ -8,4 +8,4 @@
 module.exports = ->
   @root 'pages#main'
   @resources 'users', except: ['new', 'edit']
-  @resources 'jobs', except: ['new', 'edit', 'update', 'destroy']
+  @resources 'jobs', except: ['new', 'edit', 'destroy']

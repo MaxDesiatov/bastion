@@ -4,6 +4,7 @@ exec = require('child_process').exec
 colors = require 'colors'
 jobs = require '../models/jobs'
 path = require 'path'
+fs = require 'fs'
 
 # callback to be used once git it good to go
 readyCallback = null
@@ -31,7 +32,7 @@ git = module.exports =
         if target? and target.toString().charAt(0) isnt '/'
             target = process.cwd()+'/'+target
 
-        fs.existsSync target, (exists) ->
+        fs.exists target, (exists) ->
           if not exists
             console.log "'#{target}' does not exist".red
             process.exit 1
@@ -44,8 +45,8 @@ git = module.exports =
             git.success = path.normalize target+'/.git/hooks/build-worked'
 
             # make sure the path exists and is a valid repo
-            fs.exists git.target, (exists)->
-                if exists is no
+            fs.exists git.target, (exists) ->
+                if exists is false
                   console.log "'#{target}' is not a valid Git repo".red
                   process.exit 1
                 getUser()
@@ -55,20 +56,27 @@ git = module.exports =
 
     # pull from the git repo
     pull: (next)->
-        # get the job list so we can queue jobs
-        out = "Pulling '#{git.branch}' branch"
-        jobs.updateLog jobs.current, out, ->
-            console.log out.grey
-            exec 'git fetch && git reset --hard origin/' + git.branch, (error, stdout, stderr)=>
-                if error?
-                    out = "#{error}"
-                    jobs.updateLog jobs.current, out
-                    console.log out.red
-                else
-                    out = "Updated '#{git.branch}' branch"
-                    jobs.updateLog jobs.current, out, ->
-                        console.log out.grey
-                        next()
+      # get the job list so we can queue jobs
+      out = "Pulling '#{git.branch}' branch"
+      logDiff = service: {}
+      logDiff.service[new Date().getTime()] = out
+      jobs.updateLog jobs.current, logDiff, ->
+        console.log out.grey
+        exec 'git fetch && git reset --hard origin/' + git.branch, (error, stdout, stderr) ->
+          if error?
+              out = "#{error}"
+              logDiff = error: {}
+              logDiff.error[new Date().getTime()] = out
+              jobs.updateLog jobs.current, logDiff, ->
+                console.log out.red
+                next()
+          else
+              out = "Updated '#{git.branch}' branch"
+              logDiff = service: {}
+              logDiff.service[new Date().getTime()] = out
+              jobs.updateLog jobs.current, logDiff, ->
+                  console.log out.grey
+                  next()
 
 getUser = ->
     exec 'git config --get ' + git.config.user, (error, stdout, stderr)=>

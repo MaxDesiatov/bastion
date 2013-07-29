@@ -5,9 +5,9 @@ dbName = path.basename(process.cwd()).replace(/\./, "-")
 _ = require 'underscore'
 a = require 'async'
 
-concreteDb = new db '127.0.0.1', 5984, 'bastion'
+bastionDb = new db '127.0.0.1', 5984, 'bastion'
 
-jobType = new Type concreteDb, 'job'
+jobType = new Type bastionDb, 'job'
 
 jobs = module.exports =
   current: null
@@ -15,7 +15,7 @@ jobs = module.exports =
     jobType.instance true, (error, instance) ->
       _(instance.data).extend
         addedTime: new Date().getTime()
-        log: ''
+        log: {}
         running: false
         finished: false
       instance.save ->
@@ -28,15 +28,15 @@ jobs = module.exports =
     getJobs running: true, next
 
   getAll: (cb) ->
-    jobType.filterByFields include_docs: true, (err, res) ->
-      cb (job.data for job in res.instances)
+    jobType.filterByFields include_docs: true, sort: ['addedTime'], descending: true,
+      (err, res) -> cb (job.data for job in res.instances)
 
   getLast: (next) ->
-    jobType.filterByField {
+    jobType.filterByField
       sort: 'addedTime'
       descending: true
       limit: 1
-      include_docs: true }, (error, res) ->
+      include_docs: true, (error, res) ->
         collection = res.instances
         if collection.length > 0
           next collection[0].data
@@ -44,7 +44,7 @@ jobs = module.exports =
           next()
 
   get: (id, next) ->
-    concreteDb.retrieve id, (error, job) ->
+    bastionDb.retrieve id, (error, job) ->
       if error?
         next "No job found with the id '#{id}'"
       else
@@ -52,27 +52,55 @@ jobs = module.exports =
 
   clear: (cb) ->
     jobType.all (err, res) ->
-      a.each res.instances, ((one, next) -> concreteDb.remove one.data, next), ->
+      a.each res.instances, ((one, next) -> bastionDb.remove one.data, next), ->
         cb res.instances
 
   getLog: (id, next) ->
-    concreteDb.retrieve id, (error, job) ->
+    bastionDb.retrieve id, (error, job) ->
       if error?
         next "No job found with the id '#{id}'"
       else
         next job.log
 
-  updateLog: (id, string, next) ->
-    concreteDb.retrieve id, (error, job) ->
+  byId: (id, cb) ->
+    a.waterfall [
+      _(bastionDb.checkExists).bind(bastionDb),
+      _.chain(bastionDb.retrieve).partial(id).bind(bastionDb).value()], cb
+
+  modifyOrCreate: (newData, cb) ->
+    if newData._id
+      @byId newData._id, (err, oldData) ->
+        if err is 'not_found'
+          bastionDb.create newData, cb
+        else if err?
+          cb err, {}
+        else
+          _(oldData).extend newData
+          bastionDb.modify oldData, cb
+    else
+      jobType.instance true, (err, instance) ->
+        if err?
+          cb err, {}
+        else
+          _(instance.data).extend(newData)
+          instance.save cb
+
+  updateLog: (id, obj, next) ->
+    bastionDb.retrieve id, (error, job) ->
       if error?
         return false
       else
-        job.log += "#{string} <br />"
-        concreteDb.modify job, (err, res) ->
+        if not _.isObject job.log
+          job.log = {}
+        for k, v of obj
+          if not _.isObject job.log[k]
+            job.log[k] = {}
+          _(job.log[k]).extend v
+        bastionDb.modify job, (err, res) ->
           next()
 
   currentComplete: (success, next) ->
-    concreteDb.retrieve @current, (error, job) ->
+    bastionDb.retrieve @current, (error, job) ->
       if error?
         return false
       else
@@ -81,7 +109,7 @@ jobs = module.exports =
         job.failed = not success
         job.finishedTime = new Date().getTime()
         jobs.current = null
-        concreteDb.modify job, ->
+        bastionDb.modify job, ->
           next()
 
   next: (next) ->

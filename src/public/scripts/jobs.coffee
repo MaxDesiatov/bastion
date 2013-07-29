@@ -23,14 +23,22 @@ define [
       'change': 'render'
 
     events:
-      'click .expand': 'expand'
+      'click .description': 'expand'
+      'click .job-cancel': 'cancel'
 
     ui:
       logs: '.log'
+      spinner: '.spinner-icon'
 
     waitingForRefresh: false
+    degree: 0
 
-    template: (data) -> templates.item job: data
+    template: (data) ->
+      log = []
+      for type, items of data.log
+        for date, item of items
+          log.push date: date, content: item, type: type
+      templates.item job: data, log: log.sort (a, b) -> a.date - b.date
 
     expand: ->
       if @ui.logs.hasClass 'open'
@@ -39,18 +47,33 @@ define [
         @ui.logs.slideDown 'fast'
       @ui.logs.toggleClass 'open'
 
+    cancel: ->
+      @model.save finished: true
+
     onRender: ->
       if not @waitingForRefresh
         @refresh()
+        @rotate()
+      if @model.get('finished') is true
+        $('#job-new').show()
+
+    rotate: ->
+      if @waitingForRefresh and @ui.spinner.css?
+        @degree = if @degree is 360 then 45 else @degree + 45
+        rotateString = "rotate(#{@degree}deg)"
+        for transform in ['WebkitTransform', '-moz-transform']
+          css = {}
+          css[transform] = rotateString
+          @ui.spinner.css css
+        setTimeout (=> @rotate()), 100
 
     refresh: ->
       if not @model.get 'finished'
+        @waitingForRefresh = true
         @model.fetch success: =>
-          @waitingForRefresh = true
-          setTimeout (=> @refresh), 500
+          setTimeout (=> @refresh()), 1000
       else
         @waitingForRefresh = false
-        $('.btn.build').show()
 
   jobs = new Jobs
 
@@ -65,6 +88,18 @@ define [
     itemView: JobView
     emptyView: Empty
     collection: jobs
+    collectionEvents:
+      change: 'render'
+
+    appendHtml: (collectionView, itemView, index) ->
+      childrenContainer = $(collectionView.childrenContainer or collectionView.el)
+      children = childrenContainer.children()
+      if children.size() is index
+        childrenContainer.append itemView.el
+      else
+        childrenContainer.children().eq(index).before itemView.el
+
+    onRender: -> @delegateEvents()
 
   jobsTable = new JobsTable
 
@@ -81,8 +116,11 @@ define [
     build: ->
       @ui.buildButton.hide()
       newJob = new Job
-      jobs.add newJob
-      newJob.save()
+      jobs.add newJob, at: 0
+      newJob.save {},
+        error: => @ui.buildButton.show()
+        success: ->
+          # jobs.fetch success: -> jobsTable.render()
 
     template: -> templates.index()
 

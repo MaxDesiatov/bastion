@@ -1,17 +1,23 @@
-div.description
-  div.expand
-    i.icon-chevron-sign-down
+div.description.row
   - var d = new Date(job.addedTime)
   div.time "#{d.toDateString()} #{d.toTimeString()}"
-    if job._id
-      div.id "#{job._id.toString()}"
-    if job.finished
-     - var outcomeClass = job.failed ? '.failure' : '.success'
-      div(class=".outcome#{outcomeClass}")
-        if job.failed
-          | &#10008;&nbsp;failure
-        else
-          | &#10003;&nbsp;success
+  if job._id
+    div.id "#{job._id.toString()}"
+  if !job.failed && !job.finished
+    a.btn.job-cancel Cancel
+  div(class="outcome")
+    if job.failed
+      span.failure-icon.icon: i.icon-exclamation
+      | &nbsp;failure
+    else if job.finished
+      span.success-icon.icon: i.icon-ok
+      | &nbsp;success
     else
-      i.icon-spinner
-div.log!= job.log
+      span.spinner-icon.icon: i.icon-spinner
+div.log.row
+  each item in log
+    if item.type === 'output'
+      div.output= item.content
+    else
+      | #{item.content}
+      br

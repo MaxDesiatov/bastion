@@ -27,7 +27,7 @@ define [
     className: 'user-row'
 
     modelEvents:
-      'change': 'render'
+      change: 'render'
 
     events:
       'click input[type=password]': 'clearErrorMessage'

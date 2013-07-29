@@ -15,42 +15,54 @@ ul.jobs
       i.icon-spinner
         float right
 
+    .job-cancel
+      margin-top 15px
+      margin-left 10px
+      float right
+
     &:last-child
       .description
         border-bottom 1px solid #E6E6E6
 
     .description
       cursor pointer
-      height 20px
-      padding 20px
       display block
       background-color #EEE
       border-top 1px solid #E6E6E6
       color #BBB
+      padding-left 15px
+      padding-right 15px
+      padding-bottom 15px
+      &:hover
+        background-color #EAEAEA
 
     .id
-      float: left
+      margin-top 20px
+      float left
       font-size 16px
       font-weight normal
       color #666
 
+    .icon
+      display inline-block
+
     .outcome
+      margin-top 20px
       font 16px 'MenschRegular', sans-serif
       float right
+      .failure-icon
+        color red
+      .success-icon
+        color green
 
     img.loader
       float right
 
-    .expand
-      float left
-
     .time
+      margin-top 20px
       font 13px 'Monaco', courier, 'courier new', monospace
       float left
       margin-right 20px
-
-    &:hover
-      background-color #EAEAEA
 
     .log
       display none
@@ -59,5 +71,6 @@ ul.jobs
       font 13px 'Monaco', courier, 'courier new', monospace
       color #777
 
-      span.output
+      .output
+        width 100%
         color #DDD

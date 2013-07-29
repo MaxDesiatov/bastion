@@ -17,4 +17,13 @@ _(JobsController).extend
       runner.build()
       @res.send job
 
+  update: ->
+    jobs.modifyOrCreate @req.body, (err, modifyResponse) =>
+      if err?
+        @res.send 500, err
+      else
+        responseObject = _.clone(@req.body)
+        responseObject._id = modifyResponse.id
+        @res.send 200, responseObject
+
 module.exports = JobsController

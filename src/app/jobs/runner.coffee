@@ -8,7 +8,7 @@ fs = require 'fs'
 
 parseSequence = (input) ->
   length = input.length
-  return { cmd: input[length - 1], args: input.substring 2, length - 1 }
+  return cmd: input[length - 1], args: input.substring 2, length - 1
 
 tokenize = (input, result = []) ->
   return [''] if input == ''
@@ -32,11 +32,13 @@ html = (input) ->
       return v
     else if v.cmd == 'm'
       cls = v.args.split(';').map((v) -> COLORS[parseInt v]).join(' ')
-      return "</span><span class=\"#{cls}\">"
+      # FIXME: add support for colours
+      # return "</span><span class=\"#{cls}\">"
+      return ''
     else
       return ''
 
-  return "<code><pre><span>#{result.join('')}</span></pre></code>"
+  return "#{result.join('')}"
 
 
 runner = module.exports =
@@ -44,52 +46,61 @@ runner = module.exports =
         runNextJob()
 
 runNextJob = ->
-    return no if jobs.current?
-    jobs.next ->
-        git.pull ->
-            runTask (success)->
-                jobs.currentComplete success, ->
-                    runNextJob()
+  return false if jobs.current?
+  jobs.next ->
+    git.pull ->
+      runTask (success) ->
+        jobs.currentComplete success, ->
+          runNextJob()
 
-runTask = (next)->
-    jobs.updateLog jobs.current, "Executing '#{git.runner}'", ->
-      exec git.runner,{maxBuffer: 1024*1024}, (error, stdout, stderr)=>
-        if error?
-          updateLog error, true, ->
-              updateLog stdout, true, ->
-                  updateLog stderr, true, ->
-                    fs.exists git.failure, (exists) ->
-                      if exists
-                        runFile git.failure, next, no
-                      else
-                        next no
-        else
-          updateLog stdout, false, ->
-            fs.exists git.success, (exists) ->
-              if exists
-                runFile git.success, next, yes
-              else
-                next yes
+runTask = (next) ->
+  str = "Executing '#{git.runner}'"
+  logDiff = service: {}
+  logDiff.service[new Date().getTime()] = str
+  jobs.updateLog jobs.current, logDiff, ->
+    exec git.runner, maxBuffer: 1024*1024, (error, stdout, stderr) ->
+      if error?
+        updateLog error, true, ->
+            updateLog stdout, true, ->
+                updateLog stderr, true, ->
+                  fs.exists git.failure, (exists) ->
+                    if exists
+                      runFile git.failure, next, false
+                    else
+                      next false
+      else
+        updateLog stdout, false, ->
+          fs.exists git.success, (exists) ->
+            if exists
+              runFile git.success, next, true
+            else
+              next true
 
 runFile = (file, next, args=null) ->
-    jobs.updateLog jobs.current, "Executing #{file}", ->
-        console.log "Executing #{file}".grey
-        exec file, (error, stdout, stderr)=>
-            if error?
-                updateLog error, true, ->
-                    updateLog stdout, true, ->
-                        updateLog stderr, true, ->
-                            next(args)
-            else
-                updateLog stdout, true, ->
-                    next(args)
+  str = "Executing #{file}"
+  logDiff = service: {}
+  logDiff.service[new Date().getTime()] = str
+  jobs.updateLog jobs.current, logDiff, ->
+    console.log str.grey
+    exec file, (error, stdout, stderr) ->
+      if error?
+        updateLog error, true, ->
+          updateLog stdout, true, ->
+            updateLog stderr, true, ->
+                next(args)
+      else
+        updateLog stdout, true, ->
+          next(args)
 
 updateLog = (buffer, isError, done) ->
   content = html tokenize buffer.toString()
+  logDiff = {}
   if isError
-      errorClass = ' error'
+      logDiff.error = {}
+      logDiff.error[new Date().getTime()] = content
       console.log "#{content}".red
   else
-      errorClass = ''
+      logDiff.output = {}
+      logDiff.output[new Date().getTime()] = content
       console.log content
-  jobs.updateLog jobs.current, "<span class='output#{errorClass}'>#{content}</span>", done
+  jobs.updateLog jobs.current, logDiff, done
