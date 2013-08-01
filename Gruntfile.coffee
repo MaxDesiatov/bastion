@@ -16,14 +16,14 @@ module.exports = (grunt) ->
     'backbone.marionette/lib/core/amd': 'backbone.marionette.js'
     'backbone.paginator/dist': 'backbone.paginator.js'
     'backbone.wreqr/lib/amd': 'backbone.wreqr.js'
-    'bootstrap/bootstrap/js': 'bootstrap.js'
+    'bootstrap/dist/js': 'bootstrap.js'
     'jquery': 'jquery.js'
     'requirejs': 'require.js'
     'underscore-amd': 'underscore.js'
     'jade': 'runtime.js'
 
   debugConfigCss =
-    'bootstrap/bootstrap/css': 'bootstrap.css'
+    'bootstrap/dist/css': 'bootstrap.css'
     'font-awesome/css': 'font-awesome.css'
 
   debugFiles =
@@ -86,7 +86,7 @@ module.exports = (grunt) ->
       dist:
         options:
           components:
-            'bootstrap': ['npm', {'make': 'bootstrap' }]
+            'bootstrap': ['npm', {'grunt': 'dist' }]
 
     stylus:
       app:

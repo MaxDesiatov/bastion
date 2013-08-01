@@ -5,7 +5,7 @@ td.vmiddle
 td.vmiddle
   input.input-medium(name='lastName', value=user.lastName, type='text')
 td.vmiddle
-  select.input-medium(name='group')
+  select.input-small(name='group')
     each role in ['admin', 'member', 'guest']
       if user.group === role
         option(value=role, selected="selected")= role

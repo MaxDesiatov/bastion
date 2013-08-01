@@ -13,9 +13,6 @@
     "async": "~0.2.5",
     "requirejs": "~2.1.8",
     "jade": "~0.34.1",
-    "bootstrap": "https://github.com/twitter/bootstrap/tarball/master"
-  },
-  "resolutions": {
-    "jquery": "~2.0.3"
+    "bootstrap": "~3.0.0-rc1"
   }
 }

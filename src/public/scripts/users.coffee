@@ -3,9 +3,7 @@ define [
   'backbone.marionette',
   'jquery',
   '../views/users',
-  'require',
-  'app',
-  'bootstrap'], (Backbone, Marionette, $, templates, require, app) ->
+  'bootstrap'], (Backbone, Marionette, $, templates) ->
 
   User = Backbone.Model.extend
     idAttribute: "_id"
@@ -143,6 +141,8 @@ define [
   users = new Users
 
   class UsersTable extends Marionette.CompositeView
+    tagName: 'table'
+    className: 'table table-fixed'
     collection: users
     collectionEvents:
       change: 'render'
@@ -183,7 +183,7 @@ define [
   indexLayout = new IndexLayout
 
   {
-    "index": (fetch) ->
+    index: (fetch) ->
       users.fetch success: ->
         require('app').content.show indexLayout
         indexLayout.table.show usersTable

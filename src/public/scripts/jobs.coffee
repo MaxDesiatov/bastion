@@ -127,7 +127,7 @@ define [
   indexLayout = new IndexLayout
 
   {
-    "index": (fetch) ->
+    index: (fetch) ->
       jobs.fetch success: ->
         require('app').content.show indexLayout
         indexLayout.table.show jobsTable
