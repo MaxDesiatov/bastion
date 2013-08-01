@@ -1,7 +1,6 @@
 # cli colors
 colors = require 'colors'
 git = require './git'
-server = require './server'
 exec = require('child_process').exec
 jobs = require '../models/jobs'
 fs = require 'fs'
@@ -39,7 +38,6 @@ html = (input) ->
       return ''
 
   return "#{result.join('')}"
-
 
 runner = module.exports =
     build: ->

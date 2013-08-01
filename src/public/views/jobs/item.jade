@@ -16,7 +16,7 @@ div.description.row
       span.spinner-icon.icon: i.icon-spinner
 div.log.row
   each item in log
-    if item.type === 'output'
+    if item.type === 'output' || item.type === 'error'
       div.output= item.content
     else
       | #{item.content}

@@ -119,8 +119,6 @@ define [
       jobs.add newJob, at: 0
       newJob.save {},
         error: => @ui.buildButton.show()
-        success: ->
-          # jobs.fetch success: -> jobsTable.render()
 
     template: -> templates.index()
 

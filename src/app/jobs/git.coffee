@@ -55,7 +55,7 @@ git = module.exports =
                 getRunner()
 
     # pull from the git repo
-    pull: (next)->
+    pull: (next) ->
       # get the job list so we can queue jobs
       out = "Pulling '#{git.branch}' branch"
       logDiff = service: {}

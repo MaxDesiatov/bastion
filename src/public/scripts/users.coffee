@@ -144,12 +144,18 @@ define [
 
   class UsersTable extends Marionette.CompositeView
     collection: users
+    collectionEvents:
+      change: 'render'
+      add: 'render'
+      remove: 'render'
+
     itemView: UserView
 
     template: -> templates.table()
 
     onRender: ->
       modal = $('#user-remove-modal')
+      @delegateEvents()
 
     appendHtml: (collectionView, itemView, index) ->
       childrenContainer = $(collectionView.childrenContainer or collectionView.el)
