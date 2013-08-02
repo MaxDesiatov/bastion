@@ -3,7 +3,8 @@ define [
   'backbone.marionette',
   'jquery',
   'underscore',
-  '../views/jobs'], (Backbone, Marionette, $, _, templates) ->
+  '../views/jobs',
+  'moment'], (Backbone, Marionette, $, _, templates, moment) ->
 
   class Job extends Backbone.Model
     idAttribute: "_id"
@@ -17,6 +18,12 @@ define [
     url: '/jobs'
 
   class JobView extends Marionette.ItemView
+    # workaround for template not bind before invocation by marionette.js
+    constructor: ->
+      @template = _.bind(@template, @)
+      args = Array.prototype.slice.apply arguments
+      Marionette.ItemView.prototype.constructor.apply this, args
+
     tagName: 'li'
     className: 'job'
     modelEvents:
@@ -29,16 +36,57 @@ define [
     ui:
       logs: '.log'
       spinner: '.spinner-icon'
+      timeDiff: '.time-diff'
 
     waitingForRefresh: false
     degree: 0
+
+    timeDiff: ->
+      addedTime = @model.get 'addedTime'
+      finishedTime = @model.get 'finishedTime'
+      finished = @model.get 'finished'
+      if addedTime
+        t =
+          if finished and finishedTime
+            finishedTime
+          else
+            new Date().getTime()
+        result = t - addedTime
+      else
+        result = 0
+
+      if result is 1
+        "1 millisecond"
+      else if result < 1000
+        "#{result} milliseconds"
+      else
+        seconds = Math.floor(result / 1000)
+        resultString = ""
+        converter =
+          day: (x) -> (x % 31536000) / 86400
+          hour: (x) -> ((x % 31536000) % 86400) / 3600
+          minute: (x) -> (((x % 31536000) % 86400) % 3600) / 60
+          second: (x) -> (((x % 31536000) % 86400) % 3600) % 60
+        for unit, f of converter
+          converted = Math.floor f seconds
+          if converted is 1
+            resultString += "1 #{unit} "
+          else if converted > 0
+            resultString += "#{converted} #{unit}s "
+        resultString
 
     template: (data) ->
       log = []
       for type, items of data.log
         for date, item of items
           log.push date: date, content: item, type: type
-      templates.item job: data, log: log.sort (a, b) -> a.date - b.date
+
+      started = if data.addedTime then moment data.addedTime else moment()
+      templates.item
+        job: data
+        log: log.sort (a, b) -> a.date - b.date
+        started: started.calendar()
+        timeDiff: @timeDiff()
 
     expand: ->
       if @ui.logs.hasClass 'open'
@@ -48,7 +96,7 @@ define [
       @ui.logs.toggleClass 'open'
 
     cancel: ->
-      @model.save finished: true
+      @model.save finished: true, finishedTime: new Date().getTime()
 
     onRender: ->
       if not @waitingForRefresh
@@ -69,6 +117,7 @@ define [
 
     refresh: ->
       if not @model.get 'finished'
+        @ui.timeDiff.text @timeDiff()
         @waitingForRefresh = true
         @model.fetch success: =>
           setTimeout (=> @refresh()), 1000

@@ -21,6 +21,7 @@ module.exports = (grunt) ->
     'requirejs': 'require.js'
     'underscore-amd': 'underscore.js'
     'jade': 'runtime.js'
+    'momentjs': 'moment.js'
 
   debugConfigCss =
     'bootstrap/dist/css': 'bootstrap.css'

@@ -1,10 +1,14 @@
 div.description.row
-  - var d = new Date(job.addedTime)
-  div.time "#{d.toDateString()} #{d.toTimeString()}"
-  if job._id
-    div.id "#{job._id.toString()}"
+  div.col-3.start-time= started
+  div.elapsed-time
+    if job.finished
+      | Finished in
+    else
+      | Running for
+    | &nbsp;
+    span.time-diff= timeDiff
   if !job.failed && !job.finished
-    a.btn.job-cancel Cancel
+    a.btn.btn-danger.job-cancel Cancel
   div(class="outcome")
     if job.failed
       span.failure-icon.icon: i.icon-exclamation
