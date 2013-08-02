@@ -142,8 +142,10 @@ define [
 
   class UsersTable extends Marionette.CompositeView
     tagName: 'table'
-    className: 'table table-fixed'
+    className: 'table table-hover'
     collection: users
+    ui:
+      tbody: 'tbody'
     collectionEvents:
       change: 'render'
       add: 'render'
@@ -158,7 +160,7 @@ define [
       @delegateEvents()
 
     appendHtml: (collectionView, itemView, index) ->
-      childrenContainer = $(collectionView.childrenContainer or collectionView.el)
+      childrenContainer = @ui.tbody
       children = childrenContainer.children()
       if children.size() is index
         childrenContainer.append itemView.el

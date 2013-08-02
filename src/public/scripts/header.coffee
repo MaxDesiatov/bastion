@@ -4,13 +4,37 @@ define [
   '../views/header'], (Backbone, Marionette, templates) ->
 
   currentUser = new (Backbone.Model.extend
-    idAttribute: "_id"
+    idAttribute: '_id'
     url: -> '/users/current')
 
-  class CurrentUserView extends Marionette.ItemView
-    className: "nav pull-right"
-    tagName: "ul"
+  class HeaderView extends Marionette.ItemView
     model: currentUser
+    currentlyActive: null
+    ui:
+      jobs: '#jobs-navigation'
+      users: '#users-navigation'
+
+    events:
+      'click p a.btn': 'changePassword'
+
+    className: 'container'
+
+    # workaround for template not bind before invocation by marionette.js
+    constructor: ->
+      @template = _.bind(@template, @)
+      args = Array.prototype.slice.apply arguments
+      Marionette.ItemView.prototype.constructor.apply this, args
+
+    template: ->
+      templates.header
+        # user: data
+        user:
+          name: 'test-user'
+          group: 'admin'
+        active: @currentlyActive
+
+    changePassword: ->
+      $('#change-password-modal').modal 'show'
 
     onRender: ->
       modal = $ '#change-password-modal'
@@ -30,44 +54,9 @@ define [
             contentType: 'application/json'
             processData: false
             type: 'PUT'
-            error: =>
+            error: ->
               indexLayout.notify 'Error while changing password'
           modal.modal 'hide'
-
-    events:
-      'click p a.btn': 'changePassword'
-
-    changePassword: ->
-      $('#change-password-modal').modal 'show'
-
-    template: (data) ->
-      templates.currentUser
-        # user: data
-        user: name: 'test-user'
-
-  cuView = new CurrentUserView
-
-  class NavigationView extends Marionette.ItemView
-    className: "nav"
-    tagName: "ul"
-    model: currentUser
-    currentlyActive: null
-    ui:
-      jobs: '#jobs-navigation'
-      users: '#users-navigation'
-
-    # workaround for template not bind before invocation by marionette.js
-    constructor: ->
-      @template = _.bind(@template, @)
-      args = Array.prototype.slice.apply arguments
-      Marionette.ItemView.prototype.constructor.apply this, args
-
-    template: (data) ->
-      templates.navigation
-        # user: data
-        user:
-          group: 'admin'
-        active: @currentlyActive
 
     onRoute: (route) ->
       if route isnt @currentlyActive and @ui[@currentlyActive]?
@@ -76,22 +65,8 @@ define [
         @ui[route].addClass 'active'
       @currentlyActive = route
 
-  navigationView = new NavigationView
-
+  headerView = null
   Backbone.history.on 'route', ->
-    navigationView.onRoute Backbone.history.fragment
+    headerView.onRoute Backbone.history.fragment
 
-  class HeaderLayout extends Marionette.Layout
-    regions:
-      currentUser: '#header-current-user'
-      navigation: '#header-navigation'
-      search: '#header-search'
-
-    template: ->
-      templates.header()
-
-    onRender: ->
-      @currentUser.show cuView
-      @navigation.show navigationView
-
-  new HeaderLayout
+  headerView = new HeaderView

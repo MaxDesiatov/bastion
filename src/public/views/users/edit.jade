@@ -17,10 +17,10 @@ td.vmiddle
      small.muted &nbsp;[?]
 td.edit
   if user._id
-    btn.btn.user-edit-button.change-password-button
+    a.btn.btn-default.user-edit-button.change-password-button
       i.icon-lock
-  a.btn.user-save-button(title='save')
+  a.btn.btn-default.user-save-button(title='save')
     i.icon-ok
   if !user._id
-    a.btn.user-remove-button(title='remove')
+    a.btn.btn-default.user-remove-button(title='remove')
       i.icon-remove

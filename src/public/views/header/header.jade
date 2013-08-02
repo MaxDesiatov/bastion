@@ -1,3 +1,27 @@
-p#header-current-user
-p#header-navigation
-p#header-search
+a.navbar-brand(href='#') Bastion
+
+ul.nav.navbar-nav.pull-right#header-current-user
+  li.dropdown
+    a.dropdown-toggle.pull-right(data-toggle="dropdown",
+    href="#", title=user.name) logged in as "
+      span= user.name
+      | "&nbsp;
+      b.caret
+    ul.dropdown-menu(role="menu")
+      li
+        a
+          i.icon-lock
+          | &nbsp;&nbsp;Change password
+      li
+        a
+          i.icon-signout
+          | &nbsp;&nbsp;Sign out
+
+ul.nav.navbar-nav#header-navigation
+  - var jobsKlass = active === 'jobs' ? 'active' : ''
+  li#jobs-navigation(class=jobsKlass)
+    a(href='#jobs') Jobs
+  if user.group === 'admin'
+    - var usersKlass = active === 'users' ? 'active' : ''
+    li#users-navigation(class=usersKlass)
+      a(href='#users') Users
