@@ -7,5 +7,6 @@
 # information.
 module.exports = ->
   @root 'pages#main'
+  @get 'login', 'pages#login'
   @resources 'users', except: ['new', 'edit']
   @resources 'jobs', except: ['new', 'edit', 'destroy']
