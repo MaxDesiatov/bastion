@@ -1,12 +1,14 @@
-# Draw routes.  Locomotive's router provides expressive syntax for drawing
-# routes, including support for resourceful routes, namespaces, and nesting.
-# MVC routes can be mapped mapped to controllers using convenient
-# `controller#action` shorthand.  Standard middleware in the form of
-# `function(req, res, next)` is also fully supported.  Consult the Locomotive
-# Guide on [routing](http://locomotivejs.org/guide/routing.html) for additional
-# information.
+passport = require 'passport'
+
 module.exports = ->
   @root 'pages#main'
   @get 'login', 'pages#login'
+  @post 'login', passport.authenticate 'local',
+    successRedirect: '/'
+    failureRedirect: '/login'
+  @get 'logout', 'pages#logout'
+
   @resources 'users', except: ['new', 'edit']
+  @put '/users/:id/password', 'users#password'
+
   @resources 'jobs', except: ['new', 'edit', 'destroy']

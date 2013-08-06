@@ -5,16 +5,17 @@
   "dependencies": {
     "locomotive": "~0.3.6",
     "connect-powered-by": "0.1.x",
-    "jade": "~0.31.0",
+    "jade": "~0.34.1",
     "passport-local": "~0.1.6",
     "passport": "~0.1.17",
     "connect-couchdb": "~0.4.1",
     "connect": "~2.8.4",
     "async": "~0.2.9",
-    "benchdb": "~0.2.3",
+    "benchdb": "~0.2.4",
     "underscore": "~1.5.1",
     "bcrypt": "~0.7.6",
-    "express": "~3.3.4"
+    "express": "~3.3.4",
+    "colors": "~0.6.1"
   },
   "devDependencies": {
     "matchdep": "~0.1.2",
@@ -28,7 +29,7 @@
     "grunt-concurrent": "~0.3.0",
     "grunt-bower-postinst": "~0.2.0",
     "grunt-bower-task": "https://github.com/xzyfer/grunt-bower-task/tarball/devel",
-    "grunt-contrib-jade": "~0.7.0",
+    "grunt-contrib-jade": "~0.8.0",
     "grunt-rename": "~0.1.2"
   }
 }

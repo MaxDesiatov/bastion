@@ -120,8 +120,8 @@ define [
           processData: false
           type: 'PUT'
           success: () =>
+            @isChangingPassword = false
             @render()
-            workspace.navigate 'index'
           error: () =>
             errorMessage.text 'Error while changing password'
             @errorMessageDisplayed = true

@@ -45,9 +45,9 @@ _(UsersController).extend
 
   password: ->
     if @req.body and @req.body.password and _.isString(@req.body.password) and
-    @req.body.password.length > 0 and @req.params and @req.params.userid and
-    _.isString(@req.params.userid) and @req.params.userid.length > 0
-      users.setPassword @req.params.userid, @req.body.password, (err) =>
+    @req.body.password.length > 0 and _.isString(@param('id')) and
+    @param('id').length > 0
+      users.setPassword @param('id'), @req.body.password, (err) =>
         if err?
           @res.send 500, err
         else

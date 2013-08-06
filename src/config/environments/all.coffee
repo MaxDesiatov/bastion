@@ -4,18 +4,7 @@ util = require 'util'
 path = require 'path'
 connect = require 'connect'
 passport = require 'passport'
-LocalStrategy = require('passport-local').Strategy
 ConnectCouchDB = require('connect-couchdb') connect
-users = require '../../app/models/users'
-
-passport.use(new LocalStrategy users.verify)
-
-passport.serializeUser (user, done) ->
-  done null, user._id
-
-passport.deserializeUser (token, done) ->
-  users.byId token, (err, user) ->
-    done err, user
 
 module.exports = ->
   # Warn of version mismatch between global "lcm" binary and local installation

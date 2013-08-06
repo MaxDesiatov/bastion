@@ -1,20 +1,23 @@
 td.vmiddle
-  input.input-medium(name='name', value=user.name, type='text')
+  input.input-medium.form-control(name='name', value=user.name, type='text')
 td.vmiddle
-  input.input-medium(name='firstName', value=user.firstName, type='text')
+  input.input-medium.form-control(name='firstName',
+    value=user.firstName, type='text')
 td.vmiddle
-  input.input-medium(name='lastName', value=user.lastName, type='text')
+  input.input-medium.form-control(name='lastName',
+    value=user.lastName, type='text')
 td.vmiddle
-  select(name='group')
+  select(name='group').form-control
     each role in ['admin', 'member', 'guest']
       if user.group === role
         option(value=role, selected="selected")= role
       else
         option(value=role)= role
+  | &nbsp;
   a.role-help(href="#",
-                 data-toggle="popover",
-                 data-placement="right")
-     small.muted &nbsp;[?]
+              data-toggle="popover",
+              data-placement="right")
+     small.muted [?]
 td.edit
   if user._id
     a.btn.btn-default.user-edit-button.change-password-button

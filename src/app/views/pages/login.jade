@@ -10,6 +10,6 @@ html
         a.navbar-brand(href='#') Bastion
     div.container#content
       form(action='login', method='post').form-inline.login-form
-        input(type='text', placeholder='Username').form-control
-        input(type='password', placeholder='Password').form-control
+        input(type='text', name='username', placeholder='Username').form-control
+        input(type='password', name='password', placeholder='Password').form-control
         button(type='submit').btn.btn-default Sign in

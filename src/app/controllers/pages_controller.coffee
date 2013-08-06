@@ -14,4 +14,8 @@ PagesController.main = ->
 PagesController.login = ->
   @render()
 
+PagesController.logout = ->
+  @req.logout()
+  @redirect '/login'
+
 module.exports = PagesController
