@@ -16,7 +16,7 @@ _(UsersController).extend
 
   current: ->
     if _.isObject @req.user
-      responseObject = _.clone(req.user)
+      responseObject = _.clone(@req.user)
       delete responseObject.password
       @res.send responseObject
     else

@@ -1,8 +1,10 @@
-div.modal-header
-  button.close(type="button", data-dismiss="modal") ×
-  h3#user-remove-modal-label Please confirm
-div.modal-body
-  p Are you sure you want to remove user "#{name}"
-div.modal-footer
-  a.btn(data-dismiss='modal') Cancel
-  a.btn.btn-primary Confirm
+div.modal-dialog
+  div.modal-content
+    div.modal-header
+      button.close(type="button", data-dismiss="modal") ×
+      h3#user-remove-modal-label Please confirm
+    div.modal-body
+      p Are you sure you want to remove user "#{name}"?
+    div.modal-footer
+      a.btn.btn-default(data-dismiss='modal') Cancel
+      a.btn.btn-primary Confirm

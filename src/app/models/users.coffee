@@ -33,6 +33,15 @@ module.exports =
         done null, false,
           message: 'Attempt to login as a user with unitialized password'
 
+  byName: (name, cb) ->
+    userType.oneByName name, (err, users) ->
+      if err?
+        cb err, {}
+      else if users.length < 1
+        cb 'no users found', {}
+      else
+        cb null, users[0].data
+
   byId: (id, cb) ->
     a.waterfall [
       _(updatesDb.checkExists).bind(updatesDb),
@@ -64,7 +73,11 @@ module.exports =
           cb err, {}
         else
           _(instance.data).extend(userData)
-          instance.save cb
+          instance.save (err, res) ->
+            if err?
+              cb err, {}
+            else
+              cb null, _(res).extend instance.data
 
   setPassword: (id, password, cb) ->
     bcrypt.hash password, 10, (err, hash) =>

@@ -17,6 +17,9 @@ define [
     events:
       'click p a.btn': 'changePassword'
 
+    modelEvents:
+      change: 'render'
+
     className: 'container'
 
     # workaround for template not bind before invocation by marionette.js
@@ -25,12 +28,9 @@ define [
       args = Array.prototype.slice.apply arguments
       Marionette.ItemView.prototype.constructor.apply this, args
 
-    template: ->
+    template: (data) ->
       templates.header
-        # user: data
-        user:
-          name: 'test-user'
-          group: 'admin'
+        user: data
         active: @currentlyActive
 
     changePassword: ->
@@ -69,4 +69,5 @@ define [
   Backbone.history.on 'route', ->
     headerView.onRoute Backbone.history.fragment
 
+  currentUser.fetch()
   headerView = new HeaderView
