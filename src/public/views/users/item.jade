@@ -3,7 +3,8 @@ td.vmiddle= user.firstName
 td.vmiddle= user.lastName
 td.vmiddle= user.group
 td.edit
-  a.btn.btn-default.user-edit-button(title='edit')
-    i.icon-edit
-  a.btn.btn-default.user-remove-button(title='remove')
-    i.icon-trash
+  if user.name != 'admin'
+    a.btn.btn-default.user-edit-button(title='edit')
+      i.icon-edit
+    a.btn.btn-default.user-remove-button(title='remove')
+      i.icon-trash
