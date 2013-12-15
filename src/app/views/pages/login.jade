@@ -10,10 +10,15 @@ html
       div.container
         a.navbar-brand(href='#') Bastion
     div.container#content
+        br
+        p Demo account: username
+          code admin
+          |, password
+          code bastion
         form(action='/auth/local', method='post').form-inline.login-form.pull-left
           input(type='text', name='username', placeholder='Username').form-control
           input(type='password', name='password', placeholder='Password').form-control
           button(type='submit').btn.btn-primary Sign in
-        a.btn.btn-primary.bitbucket-button.pull-right(href='/auth/bitbucket')
-          i.icon-bitbucket
-          | &nbsp;&nbsp;Sign in with Bitbucket
+        //- a.btn.btn-primary.bitbucket-button.pull-right(href='/auth/bitbucket')
+        //-   i.icon-bitbucket
+        //-   | &nbsp;&nbsp;Sign in with Bitbucket
