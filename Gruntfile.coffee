@@ -53,8 +53,7 @@ module.exports = (grunt) ->
         amd: true
         namespace: 'JST.' + view
         processName: (name) ->
-          newName = name.replace(/.*\/([A-Za-z]+)\.jade/, '$1')
-          return newName
+          name.replace /.*\/([A-Za-z]+)\.jade/, '$1'
       files: {}
     jadeConfig[view].files['dist/public/views/' + view + '.js'] =
       'src/public/views/' + view + '/*.jade'
@@ -82,12 +81,6 @@ module.exports = (grunt) ->
       install:
         options:
           copy: false
-
-    bower_postinst:
-      dist:
-        options:
-          components:
-            'bootstrap': ['npm', {'grunt': 'dist' }]
 
     stylus:
       app:
@@ -138,8 +131,7 @@ module.exports = (grunt) ->
 
   grunt.registerTask 'components', [
     'clean:components',
-    'bower',
-    'bower_postinst'
+    'bower'
   ]
 
   grunt.registerTask 'dist', [
