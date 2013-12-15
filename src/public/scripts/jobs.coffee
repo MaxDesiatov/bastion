@@ -117,6 +117,7 @@ define [
 
     refresh: ->
       if not @model.get 'finished'
+        @bindUIElements()
         @ui.timeDiff.text @timeDiff()
         @waitingForRefresh = true
         @model.fetch success: =>
