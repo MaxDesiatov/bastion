@@ -5,12 +5,12 @@ dist
 
 # compiled output
 /dist
-/tmp
+tmp/
 /docs
 
 # dependencies
-/node_modules
-/vendor/*
+node_modules/
+vendor/
 !/vendor/ember-shim.js
 !/vendor/qunit-shim.js
 
