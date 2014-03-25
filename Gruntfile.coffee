@@ -22,6 +22,9 @@ module.exports = (grunt) ->
     'underscore-amd': 'underscore.js'
     'jade': 'runtime.js'
     'momentjs': 'moment.js'
+    'ember': 'ember.prod.js'
+    'ember-data': 'ember-data.prod.js'
+    'handlebars': 'handlebars.js'
 
   debugConfigCss =
     'bootstrap/dist/css': 'bootstrap.css'
@@ -72,6 +75,9 @@ module.exports = (grunt) ->
       clientJade:
         files: ['src/public/**/*.jade']
         tasks: ['jade']
+      tmp:
+        files: ['tmp/*', 'tmp/**/*']
+        tasks: ['copy:tmp']
 
     clean:
       dist: ['dist']
@@ -107,6 +113,15 @@ module.exports = (grunt) ->
           cwd: 'src'
           dest: 'dist'
           src: ['app/views/**/*.jade']
+        }]
+
+      tmp:
+        files: [{
+          expand: true
+          dot: true
+          cwd: 'tmp'
+          dest: 'dist/public'
+          src: ['*', '**/*']
         }]
 
     rename:
