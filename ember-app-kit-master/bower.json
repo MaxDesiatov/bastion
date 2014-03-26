@@ -12,7 +12,8 @@
     "ember-testing-httpRespond": "~0.1.1",
     "loader.js": "git://github.com/stefanpenner/loader.js",
     "bootstrap": "~3.1.1",
-    "emblem.js": "~0.3.13"
+    "emblem.js": "~0.3.13",
+    "font-awesome": "~4.0.3"
   },
   "resolutions": {
     "ember": "~1.4.0"
