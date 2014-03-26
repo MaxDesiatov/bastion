@@ -19,11 +19,11 @@ div.row
         tr
           if isEditing
             td.vmiddle
-              input.input-medium.form-control name='name' value=name type='text'
+              = input value=name
             td.vmiddle
-              input.input-medium.form-control name='firstName' value=firstName type='text'
+              = input value=firstName
             td.vmiddle
-              input.input-medium.form-control name='lastName' value=lastName type='text'
+              = input value=lastName
             td.vmiddle = group
             td.edit
               a.btn.btn-default{action 'saveChanges'} title='save'
