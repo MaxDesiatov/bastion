@@ -1,9 +1,9 @@
 div.row
   div.col-md-11
-    h3 User Management
+    h3 User Management #{testProp}
 
   div.col-md-1
-    a.table-new#user-new.btn.btn-primary.pull-right title='new user'
+    a.table-new#user-new.btn.btn-primary.pull-right title='new user' click='createUser'
       i.fa.fa-plus
 
 div.row
@@ -15,7 +15,7 @@ div.row
         th Last Name
         th Role
         th.edit Edit
-      each
+      each itemController='user'
         tr
           td.vmiddle = name
           td.vmiddle = firstName
@@ -24,5 +24,5 @@ div.row
           td.edit
             a.btn.btn-default.user-edit-button title='edit'
               i.fa.fa-edit
-            a.btn.btn-default.user-remove-button title='remove'
+            a.btn.btn-default.user-remove-button title='remove' click='removeUser'
               i.fa.fa-trash-o
