@@ -3,7 +3,6 @@ User = DS.Model.extend
   firstName: DS.attr 'string'
   lastName: DS.attr 'string'
   group: DS.attr 'string'
-  isCompleted: DS.attr 'boolean'
 
 User.FIXTURES = [
   {
@@ -12,7 +11,6 @@ User.FIXTURES = [
     firstName: 'x'
     lastName: 'y'
     group: 'kjlnsdlkv'
-    isCompleted: true
   }
   {
     id: 2
@@ -20,7 +18,6 @@ User.FIXTURES = [
     firstName: 'x'
     lastName: 'y'
     group: 'kjlnsdlkv'
-    isCompleted: false
   }
   {
     id: 3
@@ -28,7 +25,6 @@ User.FIXTURES = [
     firstName: 'x'
     lastName: 'y'
     group: 'kjlnsdlkv'
-    isCompleted: false
   }
   {
     id: 4
@@ -36,7 +32,6 @@ User.FIXTURES = [
     firstName: 'x'
     lastName: 'y'
     group: 'kjlnsdlkv'
-    isCompleted: true
   }
 ]
 

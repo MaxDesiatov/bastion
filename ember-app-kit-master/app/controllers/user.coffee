@@ -3,6 +3,18 @@ UserController = Ember.ObjectController.extend
     removeUser: ->
       user = @get 'model'
       user.deleteRecord()
-      user.save();
+      user.save()
+
+    startEdit: ->
+      @set 'isEditing', true
+
+    stopEdit: ->
+      @set 'isEditing', false
+
+    saveChanges: ->
+      @get('model').save()
+      @set 'isEditing', false
+
+  isEditing: false
 
 `export default UserController`

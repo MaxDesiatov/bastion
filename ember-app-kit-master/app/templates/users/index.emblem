@@ -17,12 +17,26 @@ div.row
         th.edit Edit
       each itemController='user'
         tr
-          td.vmiddle = name
-          td.vmiddle = firstName
-          td.vmiddle = lastName
-          td.vmiddle = group
-          td.edit
-            a.btn.btn-default.user-edit-button title='edit'
-              i.fa.fa-edit
-            a.btn.btn-default.user-remove-button title='remove' click='removeUser'
-              i.fa.fa-trash-o
+          if isEditing
+            td.vmiddle
+              input.input-medium.form-control name='name' value=name type='text'
+            td.vmiddle
+              input.input-medium.form-control name='firstName' value=firstName type='text'
+            td.vmiddle
+              input.input-medium.form-control name='lastName' value=lastName type='text'
+            td.vmiddle = group
+            td.edit
+              a.btn.btn-default{action 'saveChanges'} title='save'
+                i.fa.fa-check
+              a.btn.btn-default{action 'stopEdit'} title='remove'
+                i.fa.fa-times
+          else
+            td.vmiddle = name
+            td.vmiddle = firstName
+            td.vmiddle = lastName
+            td.vmiddle = group
+            td.edit
+              a.btn.btn-default{action 'startEdit'} title='edit'
+                i.fa.fa-edit
+              a.btn.btn-default{action 'removeUser'} title='remove'
+                i.fa.fa-trash-o
