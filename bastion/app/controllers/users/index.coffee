@@ -9,6 +9,5 @@ UsersController = Ember.ArrayController.extend
         isCompleted: true
 
       user.save()
-  testProp: 'kjlndlksjnv'
 
 `export default UsersController`

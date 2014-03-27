@@ -1,6 +1,6 @@
 div.row
   div.col-md-11
-    h3 User Management #{testProp}
+    h3 User Management
 
   div.col-md-1
     a.table-new#user-new.btn.btn-primary.pull-right title='new user' click='createUser'

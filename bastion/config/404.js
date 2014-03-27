@@ -26,6 +26,6 @@ module.exports[404] = function pageNotFound(req, res) {
   }
 
   res.status(result.status);
-  res.sendfile('assets/index.html');
+  res.sendfile('.tmp/public/index.html');
 
 };

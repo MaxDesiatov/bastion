@@ -1,1 +1,3 @@
-export default DS.FixtureAdapter.extend();
+export default DS.SailsRESTAdapter.extend({
+  namespace: 'api'
+});
