@@ -21,3 +21,17 @@ vendor/
 .DS_Store
 Thumbs.db
 /coverage/*
+.netbeans
+nbproject
+.idea
+*~
+*#
+
+# sails
+
+.sails
+.waterline
+.rigging
+.tmp
+
+npm-debug.log
