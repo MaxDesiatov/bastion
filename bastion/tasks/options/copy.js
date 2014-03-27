@@ -7,13 +7,13 @@ module.exports = {
       expand: true,
       cwd: 'app',
       src: '**/*.js',
-      dest: 'tmp/javascript/app'
+      dest: '.tmp/javascript/app'
     },
     {
       expand: true,
       cwd: 'tests',
       src: ['**/*.js', '!test-helper.js', '!test-loader.js'],
-      dest: 'tmp/javascript/tests/'
+      dest: '.tmp/javascript/tests/'
     }]
   },
 
@@ -21,7 +21,7 @@ module.exports = {
     expand: true,
     cwd: 'app/styles',
     src: ['**/*.css'],
-    dest: 'tmp/result/assets'
+    dest: '.tmp/public/assets'
   },
 
   // Assembles everything in `tmp/result`.
@@ -33,18 +33,18 @@ module.exports = {
       expand: true,
       cwd: 'tests',
       src: ['test-helper.js', 'test-loader.js'],
-      dest: 'tmp/result/tests/'
+      dest: '.tmp/public/tests/'
     }, {
       expand: true,
       cwd: 'public',
       src: ['**'],
-      dest: 'tmp/result/'
+      dest: '.tmp/public/'
     }, {
       src: ['vendor/**/*.js', 'vendor/**/*.css'],
-      dest: 'tmp/result/'
+      dest: '.tmp/public/'
     }, {
       src: ['config/environment.js', 'config/environments/production.js'],
-      dest: 'tmp/result/'
+      dest: '.tmp/public/'
     }
 
     ]
@@ -57,7 +57,7 @@ module.exports = {
   dist: {
     files: [{
       expand: true,
-      cwd: 'tmp/result',
+      cwd: '.tmp/public',
       src: [
         '**',
         '!**/*.{css,js}', // Already handled by concat
@@ -69,4 +69,9 @@ module.exports = {
       dest: 'dist/'
     }]
   },
+
+  vendor: {
+    src: 'vendor/**/*',
+    dest: '.tmp/public/'
+  }
 };

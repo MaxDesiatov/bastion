@@ -8,9 +8,9 @@ module.exports = {
     },
     files: [{
       expand: true,
-      cwd: 'tmp/javascript/tests/',
+      cwd: '.tmp/javascript/tests/',
       src: '**/*.js',
-      dest: 'tmp/transpiled/tests/'
+      dest: '.tmp/transpiled/tests/'
     }]
   },
   "app": {
@@ -20,9 +20,9 @@ module.exports = {
     },
     files: [{
       expand: true,
-      cwd: 'tmp/javascript/app/',
+      cwd: '.tmp/javascript/app/',
       src: '**/*.js',
-      dest: 'tmp/transpiled/app/'
+      dest: '.tmp/transpiled/app/'
     }]
   }
 };

@@ -23,7 +23,7 @@ module.exports = {
       expand: true,
       cwd: 'tests/',
       src: '**/*.coffee',
-      dest: 'tmp/javascript/tests',
+      dest: '.tmp/javascript/tests',
       ext: '.js'
     }]
   },
@@ -35,7 +35,7 @@ module.exports = {
       expand: true,
       cwd: 'app/',
       src: '**/*.coffee',
-      dest: 'tmp/javascript/app',
+      dest: '.tmp/javascript/app',
       ext: '.js'
     }]
   }

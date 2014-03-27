@@ -4,7 +4,7 @@ module.exports = {
       expand: true,
       cwd: 'app/styles',
       src: ['**/*.styl', '!**/_*.styl'],
-      dest: 'tmp/result/assets/',
+      dest: '.tmp/public/assets/',
       ext: '.css'
     }]
   }

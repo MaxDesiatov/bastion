@@ -96,8 +96,6 @@ module.exports.controllers = {
      */
     shortcuts: true,
 
-
-
     /**
      * `prefix`
      *
@@ -116,10 +114,6 @@ module.exports.controllers = {
      * By default, no prefix is used.
      */
     prefix: '/api',
-
-
-
-
 
     /**
      * `pluralize`

@@ -13,7 +13,7 @@ module.exports = {
       precompile: false
     },
     src: "app/**/*.{hbs,hjs,handlebars}",
-    dest: "tmp/result/assets/templates.js"
+    dest: ".tmp/public/assets/templates.js"
   },
   dist: {
     src: "<%= emberTemplates.debug.src %>",

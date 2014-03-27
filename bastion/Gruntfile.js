@@ -1,484 +1,251 @@
-/**
- * Gruntfile
- *
- * If you created your Sails app with `sails new foo --linker`, 
- * the following files will be automatically injected (in order)
- * into the EJS and HTML files in your `views` and `assets` folders.
- *
- * At the top part of this file, you'll find a few of the most commonly
- * configured options, but Sails' integration with Grunt is also fully
- * customizable.  If you'd like to work with your assets differently 
- * you can change this file to do anything you like!
- *
- * More information on using Grunt to work with static assets:
- * http://gruntjs.com/configuring-tasks
- */
+// jshint node:true
 
-module.exports = function (grunt) {
-
-
-
-  /**
-   * CSS files to inject in order
-   * (uses Grunt-style wildcard/glob/splat expressions)
-   *
-   * By default, Sails also supports LESS in development and production.
-   * To use SASS/SCSS, Stylus, etc., edit the `sails-linker:devStyles` task 
-   * below for more options.  For this to work, you may need to install new 
-   * dependencies, e.g. `npm install grunt-contrib-sass`
-   */
-
-  var cssFilesToInject = [
-    'linker/**/*.css'
-  ];
-
-
-  /**
-   * Javascript files to inject in order
-   * (uses Grunt-style wildcard/glob/splat expressions)
-   *
-   * To use client-side CoffeeScript, TypeScript, etc., edit the 
-   * `sails-linker:devJs` task below for more options.
-   */
-
-  var jsFilesToInject = [
-
-    // Below, as a demonstration, you'll see the built-in dependencies 
-    // linked in the proper order order
-
-    // Bring in the socket.io client
-    'linker/js/socket.io.js',
-
-    // then beef it up with some convenience logic for talking to Sails.js
-    'linker/js/sails.io.js',
-
-    // A simpler boilerplate library for getting you up and running w/ an
-    // automatic listener for incoming messages from Socket.io.
-    'linker/js/app.js',
-
-    // *->    put other dependencies here   <-*
-
-    // All of the rest of your app scripts imported here
-    'linker/**/*.js'
-  ];
-
-
-  /**
-   * Client-side HTML templates are injected using the sources below
-   * The ordering of these templates shouldn't matter.
-   * (uses Grunt-style wildcard/glob/splat expressions)
-   * 
-   * By default, Sails uses JST templates and precompiles them into 
-   * functions for you.  If you want to use jade, handlebars, dust, etc.,
-   * edit the relevant sections below.
-   */
-
-  var templateFilesToInject = [
-    'linker/**/*.html'
-  ];
-
-
-
-  /////////////////////////////////////////////////////////////////
-  /////////////////////////////////////////////////////////////////
-  /////////////////////////////////////////////////////////////////
-  /////////////////////////////////////////////////////////////////
-  /////////////////////////////////////////////////////////////////
-  /////////////////////////////////////////////////////////////////
-  /////////////////////////////////////////////////////////////////
-  /////////////////////////////////////////////////////////////////
-  /////////////////////////////////////////////////////////////////
-  /////////////////////////////////////////////////////////////////
+module.exports = function(grunt) {
+  // To support Coffeescript, SASS, LESS and others, just install
+  // the appropriate grunt package and it will be automatically included
+  // in the build process:
   //
-  // DANGER:
+  // * for Coffeescript, run `npm install --save-dev grunt-contrib-coffee`
   //
-  // With great power comes great responsibility.
+  // * for SCSS (without SASS), run `npm install --save-dev grunt-sass`
+  // * for SCSS/SASS support (may be slower), run
+  //   `npm install --save-dev grunt-contrib-sass`
+  //   This depends on the ruby sass gem, which can be installed with
+  //   `gem install sass`
+  // * for Compass, run `npm install --save-dev grunt-contrib-compass`
+  //   This depends on the ruby compass gem, which can be installed with
+  //   `gem install compass`
+  //   You should not install SASS if you have installed Compass.
   //
-  /////////////////////////////////////////////////////////////////
-  /////////////////////////////////////////////////////////////////
-  /////////////////////////////////////////////////////////////////
-  /////////////////////////////////////////////////////////////////
-  /////////////////////////////////////////////////////////////////
-  /////////////////////////////////////////////////////////////////
-  /////////////////////////////////////////////////////////////////
-  /////////////////////////////////////////////////////////////////
-  /////////////////////////////////////////////////////////////////
-  /////////////////////////////////////////////////////////////////
+  // * for LESS, run `npm install --save-dev grunt-contrib-less`
+  //
+  // * for Stylus/Nib, `npm install --save-dev grunt-contrib-stylus`
+  //
+  // * for Emblem, run the following commands:
+  //   `npm uninstall --save-dev grunt-ember-templates`
+  //   `npm install --save-dev grunt-emblem`
+  //   `bower install emblem.js --save`
+  //
+  // * For EmberScript, run `npm install --save-dev grunt-ember-script`
+  //
+  // * for LiveReload, `npm install --save-dev connect-livereload`
+  //
+  // * for YUIDoc support, `npm install --save-dev grunt-contrib-yuidoc`
+  //   It is also nice to use a theme other than default. For example,
+  //   simply do: `npm install yuidoc-theme-blue`
+  //   Currently, only the `app` directory is used for generating docs.
+  //   When installed, visit: http[s]://[host:port]/docs
+  //
+  // * for displaying the execution time of the grunt tasks,
+  //   `npm install --save-dev time-grunt`
+  //
+  // * for minimizing the index.html at the end of the dist task
+  //   `npm install --save-dev grunt-contrib-htmlmin`
+  //
+  // * for minimizing images in the dist task
+  //   `npm install --save-dev grunt-contrib-imagemin`
+  //
+  // * for using images based CSS sprites (http://youtu.be/xD8DW6IQ6r0)
+  //   `npm install --save-dev grunt-fancy-sprites`
+  //   `bower install --save fancy-sprites-scss`
+  //
+  // * for automatically adding CSS vendor prefixes (autoprefixer)
+  //   `npm install --save-dev grunt-autoprefixer`
+  //
+  // * for package import validations
+  //   `npm install --save-dev grunt-es6-import-validate`
+  //
 
-  // Modify css file injection paths to use 
-  cssFilesToInject = cssFilesToInject.map(function (path) {
-    return '.tmp/public/' + path;
-  });
+  var Helpers = require('./tasks/helpers'),
+      filterAvailable = Helpers.filterAvailableTasks,
+      _ = grunt.util._,
+      path = require('path');
 
-  // Modify js file injection paths to use 
-  jsFilesToInject = jsFilesToInject.map(function (path) {
-    return '.tmp/public/' + path;
-  });
-  
-  
-  templateFilesToInject = templateFilesToInject.map(function (path) {
-    return 'assets/' + path;
-  });
+  Helpers.pkg = require("./package.json");
 
+  if (Helpers.isPackageAvailable("time-grunt")) {
+    require("time-grunt")(grunt);
+  }
 
-  // Get path to core grunt dependencies from Sails
-  var depsPath = grunt.option('gdsrc') || 'node_modules/sails/node_modules';
-  grunt.loadTasks(depsPath + '/grunt-contrib-clean/tasks');
-  grunt.loadTasks(depsPath + '/grunt-contrib-copy/tasks');
-  grunt.loadTasks(depsPath + '/grunt-contrib-concat/tasks');
-  grunt.loadTasks(depsPath + '/grunt-sails-linker/tasks');
-  grunt.loadTasks(depsPath + '/grunt-contrib-jst/tasks');
-  grunt.loadTasks(depsPath + '/grunt-contrib-watch/tasks');
-  grunt.loadTasks(depsPath + '/grunt-contrib-uglify/tasks');
-  grunt.loadTasks(depsPath + '/grunt-contrib-cssmin/tasks');
-  grunt.loadTasks(depsPath + '/grunt-contrib-less/tasks');
-  grunt.loadTasks(depsPath + '/grunt-contrib-coffee/tasks');
+  // Loads task options from `tasks/options/` and `tasks/custom-options`
+  // and loads tasks defined in `package.json`
+  var config = _.extend({},
+    require('load-grunt-config')(grunt, {
+        configPath: path.join(__dirname, 'tasks/options'),
+        loadGruntTasks: false,
+        init: false
+      }),
+    require('load-grunt-config')(grunt, { // Custom options have precedence
+        configPath: path.join(__dirname, 'tasks/custom-options'),
+        init: false
+      })
+  );
 
-  // Project configuration.
-  grunt.initConfig({
-    pkg: grunt.file.readJSON('package.json'),
+  grunt.loadTasks('tasks'); // Loads tasks in `tasks/` folder
 
-    copy: {
-      dev: {
-        files: [
-          {
-          expand: true,
-          cwd: './assets',
-          src: ['**/*.!(coffee)'],
-          dest: '.tmp/public'
-        }
-        ]
-      },
-      build: {
-        files: [
-          {
-          expand: true,
-          cwd: '.tmp/public',
-          src: ['**/*'],
-          dest: 'www'
-        }
-        ]
-      }
-    },
-
-    clean: {
-      dev: ['.tmp/public/**'],
-      build: ['www']
-    },
-
-    jst: {
-      dev: {
-
-        // To use other sorts of templates, specify the regexp below:
-        // options: {
-        //   templateSettings: {
-        //     interpolate: /\{\{(.+?)\}\}/g
-        //   }
-        // },
-
-        files: {
-          '.tmp/public/jst.js': templateFilesToInject
-        }
-      }
-    },
-
-    less: {
-      dev: {
-        files: [
-          {
-          expand: true,
-          cwd: 'assets/styles/',
-          src: ['*.less'],
-          dest: '.tmp/public/styles/',
-          ext: '.css'
-        }, {
-          expand: true,
-          cwd: 'assets/linker/styles/',
-          src: ['*.less'],
-          dest: '.tmp/public/linker/styles/',
-          ext: '.css'
-        }
-        ]
-      }
-    },
-    
-    coffee: {
-      dev: {
-        options:{
-          bare:true
-        },
-        files: [
-          {
-            expand: true,
-            cwd: 'assets/js/',
-            src: ['**/*.coffee'],
-            dest: '.tmp/public/js/',
-            ext: '.js'
-          }, {
-            expand: true,
-            cwd: 'assets/linker/js/',
-            src: ['**/*.coffee'],
-            dest: '.tmp/public/linker/js/',
-            ext: '.js'
-          }
-        ]
-      }
-    },
-
-    concat: {
-      js: {
-        src: jsFilesToInject,
-        dest: '.tmp/public/concat/production.js'
-      },
-      css: {
-        src: cssFilesToInject,
-        dest: '.tmp/public/concat/production.css'
-      }
-    },
-
-    uglify: {
-      dist: {
-        src: ['.tmp/public/concat/production.js'],
-        dest: '.tmp/public/min/production.js'
-      }
-    },
-
-    cssmin: {
-      dist: {
-        src: ['.tmp/public/concat/production.css'],
-        dest: '.tmp/public/min/production.css'
-      }
-    },
-
-    'sails-linker': {
-
-      devJs: {
-        options: {
-          startTag: '<!--SCRIPTS-->',
-          endTag: '<!--SCRIPTS END-->',
-          fileTmpl: '<script src="%s"></script>',
-          appRoot: '.tmp/public'
-        },
-        files: {
-          '.tmp/public/**/*.html': jsFilesToInject,
-          'views/**/*.html': jsFilesToInject,
-          'views/**/*.ejs': jsFilesToInject
-        }
-      },
-
-      prodJs: {
-        options: {
-          startTag: '<!--SCRIPTS-->',
-          endTag: '<!--SCRIPTS END-->',
-          fileTmpl: '<script src="%s"></script>',
-          appRoot: '.tmp/public'
-        },
-        files: {
-          '.tmp/public/**/*.html': ['.tmp/public/min/production.js'],
-          'views/**/*.html': ['.tmp/public/min/production.js'],
-          'views/**/*.ejs': ['.tmp/public/min/production.js']
-        }
-      },
-
-      devStyles: {
-        options: {
-          startTag: '<!--STYLES-->',
-          endTag: '<!--STYLES END-->',
-          fileTmpl: '<link rel="stylesheet" href="%s">',
-          appRoot: '.tmp/public'
-        },
-
-        // cssFilesToInject defined up top
-        files: {
-          '.tmp/public/**/*.html': cssFilesToInject,
-          'views/**/*.html': cssFilesToInject,
-          'views/**/*.ejs': cssFilesToInject
-        }
-      },
-
-      prodStyles: {
-        options: {
-          startTag: '<!--STYLES-->',
-          endTag: '<!--STYLES END-->',
-          fileTmpl: '<link rel="stylesheet" href="%s">',
-          appRoot: '.tmp/public'
-        },
-        files: {
-          '.tmp/public/index.html': ['.tmp/public/min/production.css'],
-          'views/**/*.html': ['.tmp/public/min/production.css'],
-          'views/**/*.ejs': ['.tmp/public/min/production.css']
-        }
-      },
-
-      // Bring in JST template object
-      devTpl: {
-        options: {
-          startTag: '<!--TEMPLATES-->',
-          endTag: '<!--TEMPLATES END-->',
-          fileTmpl: '<script type="text/javascript" src="%s"></script>',
-          appRoot: '.tmp/public'
-        },
-        files: {
-          '.tmp/public/index.html': ['.tmp/public/jst.js'],
-          'views/**/*.html': ['.tmp/public/jst.js'],
-          'views/**/*.ejs': ['.tmp/public/jst.js']
-        }
-      },
+  config.env = process.env;
 
 
-      /*******************************************
-       * Jade linkers (TODO: clean this up)
-       *******************************************/
+  // App Kit's Main Tasks
+  // ====================
 
-      devJsJADE: {
-        options: {
-          startTag: '// SCRIPTS',
-          endTag: '// SCRIPTS END',
-          fileTmpl: 'script(type="text/javascript", src="%s")',
-          appRoot: '.tmp/public'
-        },
-        files: {
-          'views/**/*.jade': jsFilesToInject
-        }
-      },
 
-      prodJsJADE: {
-        options: {
-          startTag: '// SCRIPTS',
-          endTag: '// SCRIPTS END',
-          fileTmpl: 'script(type="text/javascript", src="%s")',
-          appRoot: '.tmp/public'
-        },
-        files: {
-          'views/**/*.jade': ['.tmp/public/min/production.js']
-        }
-      },
+  // Generate the production version
+  // ------------------
+  grunt.registerTask('dist', "Build a minified & production-ready version of your app.", [
+                     'clean:dist',
+                     'build:dist',
+                     'copy:assemble',
+                     'createDistVersion'
+                     ]);
 
-      devStylesJADE: {
-        options: {
-          startTag: '// STYLES',
-          endTag: '// STYLES END',
-          fileTmpl: 'link(rel="stylesheet", href="%s")',
-          appRoot: '.tmp/public'
-        },
-        files: {
-          'views/**/*.jade': cssFilesToInject
-        }
-      },
 
-      prodStylesJADE: {
-        options: {
-          startTag: '// STYLES',
-          endTag: '// STYLES END',
-          fileTmpl: 'link(rel="stylesheet", href="%s")',
-          appRoot: '.tmp/public'
-        },
-        files: {
-          'views/**/*.jade': ['.tmp/public/min/production.css']
-        }
-      },
+  // Default Task
+  // ------------------
+  // grunt.registerTask('default', "Build (in debug mode) & test your application.", ['test']);
 
-      // Bring in JST template object
-      devTplJADE: {
-        options: {
-          startTag: '// TEMPLATES',
-          endTag: '// TEMPLATES END',
-          fileTmpl: 'script(type="text/javascript", src="%s")',
-          appRoot: '.tmp/public'
-        },
-        files: {
-          'views/**/*.jade': ['.tmp/public/jst.js']
-        }
-      }
-      /************************************
-       * Jade linker end
-       ************************************/
-    },
 
-    watch: {
-      api: {
+  // Servers
+  // -------------------
+  grunt.registerTask('default', "Run your server in development mode, auto-rebuilding when files change.",
+                    ['clean:debug',
+                    'build:debug',
+                    // 'expressServer:debug',
+                    // 'watch'
+                    ]);
 
-        // API files to watch:
-        files: ['api/**/*']
-      },
-      assets: {
+  grunt.registerTask('server:dist', "Build and preview a minified & production-ready version of your app.", [
+                     'dist',
+                     'expressServer:dist:keepalive'
+                     ]);
 
-        // Assets to watch:
-        files: ['assets/**/*'],
 
-        // When assets are changed:
-        tasks: ['compileAssets', 'linkAssets']
-      }
+  // Testing
+  // -------
+  // grunt.registerTask('test', "Run your apps's tests once. Uses Google Chrome by default.", [
+  //                    'clean:debug', 'build:debug', 'testem:ci:basic' ]);
+
+  // grunt.registerTask('test:ci', "Run your app's tests in PhantomJS. For use in continuous integration (i.e. Travis CI).", [
+  //                    'clean:debug', 'build:debug', 'testem:ci:basic' ]);
+
+  // grunt.registerTask('test:browsers', "Run your app's tests in multiple browsers (see tasks/options/testem.js for configuration).", [
+  //                    'clean:debug', 'build:debug', 'testem:ci:browsers' ]);
+
+  // grunt.registerTask('test:server', "Alias to `testem:run:basic`. Be sure to install testem first using `npm install -g testem`", [
+  //                    'testem:run:basic' ]);
+
+  // Worker tasks
+  // =================================
+
+  grunt.registerTask('build:dist', filterAvailable([
+                     'createResultDirectory', // Create directoy beforehand, fixes race condition
+                     'fancySprites:create',
+                     'concurrent:buildDist', // Executed in parallel, see config below
+                     ]));
+
+  grunt.registerTask('build:debug', filterAvailable([
+                     'jshint:tooling',
+                     'createResultDirectory', // Create directoy beforehand, fixes race condition
+                     'fancySprites:create',
+                     'concurrent:buildDebug', // Executed in parallel, see config below
+                     ]));
+
+  grunt.registerTask('createDistVersion', filterAvailable([
+                     'useminPrepare', // Configures concat, cssmin and uglify
+                     'concat', // Combines css and javascript files
+
+                     'cssmin', // Minifies css
+                     'uglify', // Minifies javascript
+                     'imagemin', // Optimizes image compression
+                     // 'svgmin',
+                     'copy:dist', // Copies files not covered by concat and imagemin
+
+                     'rev', // Appends 8 char hash value to filenames
+                     'usemin', // Replaces file references
+                     'htmlmin:dist' // Removes comments and whitespace
+                     ]));
+
+  // Documentation
+  // -------
+  grunt.registerTask('docs', "Build YUIDoc documentation.", [
+                     'buildDocs',
+                     'server:debug'
+                     ]);
+
+
+  // Parallelize most of the build process
+  _.merge(config, {
+    concurrent: {
+      buildDist: [
+        "buildTemplates:dist",
+        "buildScripts",
+        "buildStyles",
+        "buildIndexHTML:dist"
+      ],
+      buildDebug: [
+        "buildTemplates:debug",
+        "buildScripts",
+        "buildStyles",
+        "buildIndexHTML:debug"
+      ]
     }
   });
 
-  // When Sails is lifted:
-  grunt.registerTask('default', [
-    'compileAssets',
-    'linkAssets',
-    'watch'
-  ]);
+  // Templates
+  grunt.registerTask('buildTemplates:dist', filterAvailable([
+                     'emblem:compile',
+                     'emberTemplates:dist'
+                     ]));
 
-  grunt.registerTask('compileAssets', [
-    'clean:dev',
-    'jst:dev',
-    'less:dev',
-    'copy:dev',    
-    'coffee:dev'
-  ]);
+  grunt.registerTask('buildTemplates:debug', filterAvailable([
+                     'emblem:compile',
+                     'emberTemplates:debug'
+                     ]));
 
-  grunt.registerTask('linkAssets', [
+  // Scripts
+  grunt.registerTask('buildScripts', filterAvailable([
+                     'jshint:app',
+                     'jshint:tests',
+                     // 'validate-imports:app',
+                     // 'validate-imports:tests',
+                     'coffee',
+                     'emberscript',
+                     'copy:javascriptToTmp',
+                     'transpile',
+                     'buildDocs',
+                     'concat_sourcemap',
+                     'copy:vendor'
+                     ]));
 
-    // Update link/script/template references in `assets` index.html
-    'sails-linker:devJs',
-    'sails-linker:devStyles',
-    'sails-linker:devTpl',
-    'sails-linker:devJsJADE',
-    'sails-linker:devStylesJADE',
-    'sails-linker:devTplJADE'
-  ]);
+  // Styles
+  grunt.registerTask('buildStyles', filterAvailable([
+                     'compass:compile',
+                     'sass:compile',
+                     'less:compile',
+                     'stylus:compile',
+                     'copy:cssToResult',
+                     'autoprefixer:app'
+                     ]));
 
+  // Documentation
+  grunt.registerTask('buildDocs', filterAvailable([
+                     'yuidoc:debug',
+                     ]));
 
-  // Build the assets into a web accessible folder.
-  // (handy for phone gap apps, chrome extensions, etc.)
-  grunt.registerTask('build', [
-    'compileAssets',
-    'linkAssets',
-    'clean:build',
-    'copy:build'
-  ]);
+  // Index HTML
+  grunt.registerTask('buildIndexHTML:dist', [
+                     'preprocess:indexHTMLDistApp',
+                     'preprocess:indexHTMLDistTests'
+                     ]);
 
-  // When sails is lifted in production
-  grunt.registerTask('prod', [
-    'clean:dev',
-    'jst:dev',
-    'less:dev',
-    'copy:dev',
-    'coffee:dev',
-    'concat',
-    'uglify',
-    'cssmin',
-    'sails-linker:prodJs',
-    'sails-linker:prodStyles',
-    'sails-linker:devTpl',
-    'sails-linker:prodJsJADE',
-    'sails-linker:prodStylesJADE',
-    'sails-linker:devTplJADE'
-  ]);
+  grunt.registerTask('buildIndexHTML:debug', [
+                     'preprocess:indexHTMLDebugApp',
+                     'preprocess:indexHTMLDebugTests'
+                     ]);
 
-  // When API files are changed:
-  // grunt.event.on('watch', function(action, filepath) {
-  //   grunt.log.writeln(filepath + ' has ' + action);
+  grunt.registerTask('createResultDirectory', function() {
+    grunt.file.mkdir('tmp/result');
+  });
 
-  //   // Send a request to a development-only endpoint on the server
-  //   // which will reuptake the file that was changed.
-  //   var baseurl = grunt.option('baseurl');
-  //   var gruntSignalRoute = grunt.option('signalpath');
-  //   var url = baseurl + gruntSignalRoute + '?action=' + action + '&filepath=' + filepath;
-
-  //   require('http').get(url)
-  //   .on('error', function(e) {
-  //     console.error(filepath + ' has ' + action + ', but could not signal the Sails.js server: ' + e.message);
-  //   });
-  // });
+  grunt.initConfig(config);
 };

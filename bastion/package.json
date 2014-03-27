@@ -1,21 +1,55 @@
 {
-    "name": "bastion",
-    "private": true,
-    "version": "0.0.0",
-    "description": "a Sails application",
-    "dependencies": {
-        "sails": "0.9.15",
-        "grunt": "0.4.1",
-        "sails-disk": "~0.9.0",
-        "ejs": "0.8.4",
-        "optimist": "0.3.4"
-    },
-    "scripts": {
-        "start": "node app.js",
-        "debug": "node debug app.js"
-    },
-    "main": "app.js",
-    "repository": "",
-    "author": "",
-    "license": ""
+  "name": "bastion",
+  "namespace": "appkit",
+  "private": true,
+  "version": "0.0.0",
+  "description": "a Sails application",
+  "dependencies": {
+    "sails": "0.9.15",
+    "grunt": "0.4.1",
+    "sails-disk": "~0.9.0",
+    "ejs": "0.8.4",
+    "optimist": "0.3.4"
+  },
+  "scripts": {
+    "start": "node app.js",
+    "debug": "node debug app.js",
+    "postinstall": "bower install"
+  },
+  "main": "app.js",
+  "repository": "",
+  "author": "",
+  "license": "",
+  "devDependencies": {
+    "bower": "~1.2.7",
+    "connect-livereload": "~0.3.1",
+    "express": "~3.4.8",
+    "express-namespace": "~0.1.1",
+    "grunt": "~0.4.2",
+    "grunt-cli": "~0.1.9",
+    "grunt-concat-sourcemap": "~0.4.0",
+    "grunt-concurrent": "~0.4.3",
+    "grunt-contrib-clean": "~0.5.0",
+    "grunt-contrib-coffee": "^0.10.1",
+    "grunt-contrib-concat": "~0.3.0",
+    "grunt-contrib-copy": "~0.4.1",
+    "grunt-contrib-cssmin": "~0.6.2",
+    "grunt-contrib-jshint": "~0.8.0",
+    "grunt-contrib-stylus": "^0.13.2",
+    "grunt-contrib-testem": "~0.5.14",
+    "grunt-contrib-uglify": "~0.2.7",
+    "grunt-contrib-watch": "~0.5.3",
+    "grunt-emblem": "^0.1.0",
+    "grunt-es6-import-validate": "0.0.6",
+    "grunt-es6-module-transpiler": "~0.6.0",
+    "grunt-preprocess": "~3.0.1",
+    "grunt-rev": "~0.1.0",
+    "grunt-usemin": "~0.1.13",
+    "load-grunt-config": "~0.7.0",
+    "lockfile": "~0.4.2",
+    "loom": "~3.1.2",
+    "loom-generators-ember-appkit": "~1.0.5",
+    "originate": "~0.1.5",
+    "request": "~2.33.0"
+  }
 }
