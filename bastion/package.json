@@ -23,8 +23,6 @@
   "devDependencies": {
     "bower": "~1.2.7",
     "connect-livereload": "~0.3.1",
-    "express": "~3.4.8",
-    "express-namespace": "~0.1.1",
     "grunt": "~0.4.2",
     "grunt-cli": "~0.1.9",
     "grunt-concat-sourcemap": "~0.4.0",
@@ -49,7 +47,6 @@
     "lockfile": "~0.4.2",
     "loom": "~3.1.2",
     "loom-generators-ember-appkit": "~1.0.5",
-    "originate": "~0.1.5",
     "request": "~2.33.0"
   }
 }
