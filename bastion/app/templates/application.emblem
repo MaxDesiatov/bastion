@@ -1,11 +1,11 @@
 nav.navbar.navbar-fixed-top.navbar-inverse
   .container
-    a.navbar-brand href='/'
+    = link-to 'projects' classNames='navbar-brand'
       | Bastion
 
     ul.nav.navbar-nav.pull-right#header-current-user
       li.dropdown
-        a.dropdown-toggle.pull-right data-toggle="dropdown" href="#" title=user.name
+        a.dropdown-toggle.pull-right data-toggle="dropdown" title=user.name
           | logged in as user
           b.caret
         ul.dropdown-menu role="menu"
@@ -19,12 +19,10 @@ nav.navbar.navbar-fixed-top.navbar-inverse
               | &nbsp;&nbsp;Sign out
 
     ul.nav.navbar-nav#header-navigation
-      li#jobs-navigation
-        = link-to 'projects'
-          | Projects
-      li#users-navigation
-        = link-to 'users'
-          | Users
+      = link-to 'projects' activeClass='active' tagName='li'
+        a href=view.href Projects
+      = link-to 'users' activeClass='active' tagName='li'
+        a href=view.href Users
 
 .container
   = outlet
