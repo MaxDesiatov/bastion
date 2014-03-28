@@ -73,5 +73,14 @@ module.exports = {
   vendor: {
     src: 'vendor/**/*',
     dest: '.tmp/public/'
+  },
+
+  socket: {
+    files: [{
+      expand: true,
+      cwd: 'assets/js',
+      src: '*',
+      dest: '.tmp/public/assets'
+    }]
   }
 };

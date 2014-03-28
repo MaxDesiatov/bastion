@@ -31,10 +31,14 @@
     <script src="/vendor/loader.js/loader.js"></script>
     <script src="/vendor/ember-resolver/dist/ember-resolver.js"></script>
     <script src="/vendor/ic-ajax/main.js"></script>
+    <script src="/assets/socket.io.js"></script>
+    <script src="/assets/sails.io.js"></script>
     <script src="/vendor/ember-data-sails-adapter/ember-data-sails-adapter.js"></script>
-
   <!-- endbuild -->
 
+    <script>
+    window.socket = io.connect();
+    </script>
   <!-- build:js(tmp/result) /assets/app.min.js -->
 
     <script src="/assets/app.js"></script>

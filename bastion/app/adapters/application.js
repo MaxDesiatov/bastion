@@ -1,3 +1,3 @@
-export default DS.SailsRESTAdapter.extend({
-  namespace: 'api'
+export default DS.SailsSocketAdapter.extend({
+  namespace: '/api'
 });

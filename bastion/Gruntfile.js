@@ -214,7 +214,8 @@ module.exports = function(grunt) {
                      'transpile',
                      'buildDocs',
                      'concat_sourcemap',
-                     'copy:vendor'
+                     'copy:vendor',
+                     'copy:socket'
                      ]));
 
   // Styles
