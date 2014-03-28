@@ -8,35 +8,37 @@ div.row
 
 div.row
   div.col-md-12#user-table
-    table.table
-      tr
-        th Username
-        th First Name
-        th Last Name
-        th Role
-        th.edit Edit
-      each itemController='user'
-        tr
-          if isEditing
-            td.vmiddle
-              = input value=name
-            td.vmiddle
-              = input value=firstName
-            td.vmiddle
-              = input value=lastName
-            td.vmiddle = group
-            td.edit
-              a.btn.btn-default{action 'saveChanges'} title='save'
-                i.fa.fa-check
-              a.btn.btn-default{action 'stopEdit'} title='remove'
-                i.fa.fa-times
-          else
-            td.vmiddle = name
-            td.vmiddle = firstName
-            td.vmiddle = lastName
-            td.vmiddle = group
-            td.edit
-              a.btn.btn-default{action 'startEdit'} title='edit'
-                i.fa.fa-edit
-              a.btn.btn-default{action 'removeUser'} title='remove'
-                i.fa.fa-trash-o
+    = table-component hasFooter=false enableContentSelection=false columnsBinding="columns" contentBinding="content"
+
+    //- table.table
+    //-   tr
+    //-     th Username
+    //-     th First Name
+    //-     th Last Name
+    //-     th Role
+    //-     th.edit Edit
+    //-   each itemController='user'
+    //-     tr
+    //-       if isEditing
+    //-         td.vmiddle
+    //-           = input value=name
+    //-         td.vmiddle
+    //-           = input value=firstName
+    //-         td.vmiddle
+    //-           = input value=lastName
+    //-         td.vmiddle = group
+    //-         td.edit
+    //-           a.btn.btn-default{action 'saveChanges'} title='save'
+    //-             i.fa.fa-check
+    //-           a.btn.btn-default{action 'stopEdit'} title='remove'
+    //-             i.fa.fa-times
+    //-       else
+    //-         td.vmiddle = name
+    //-         td.vmiddle = firstName
+    //-         td.vmiddle = lastName
+    //-         td.vmiddle = group
+    //-         td.edit
+    //-           a.btn.btn-default{action 'startEdit'} title='edit'
+    //-             i.fa.fa-edit
+    //-           a.btn.btn-default{action 'removeUser'} title='remove'
+    //-             i.fa.fa-trash-o

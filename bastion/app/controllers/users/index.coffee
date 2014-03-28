@@ -10,4 +10,23 @@ UsersController = Ember.ArrayController.extend
 
       user.save()
 
+  columns: Ember.computed ->
+    [Ember.Table.ColumnDefinition.create
+      columnWidth: 100
+      headerCellName: 'Name'
+      getCellContent: (row) -> row.get 'name'
+    Ember.Table.ColumnDefinition.create
+      columnWidth: 100
+      headerCellName: 'First Name'
+      getCellContent: (row) -> row.get 'firstName'
+    Ember.Table.ColumnDefinition.create
+      columnWidth: 100
+      headerCellName: 'Last Name'
+      getCellContent: (row) -> row.get 'lastName'
+    Ember.Table.ColumnDefinition.create
+      columnWidth: 100
+      headerCellName: 'Group'
+      getCellContent: (row) -> row.get 'group'
+    ]
+
 `export default UsersController`

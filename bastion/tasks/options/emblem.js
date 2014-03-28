@@ -6,7 +6,7 @@ module.exports = {
     options: {
       root: 'app/templates/',
       dependencies: {
-        jquery: 'vendor/jquery/jquery.js',
+        jquery: 'vendor/jquery/dist/jquery.js',
         ember: 'vendor/ember/ember.js',
         handlebars: 'vendor/handlebars/handlebars.js',
         emblem: 'vendor/emblem.js/emblem.js'
