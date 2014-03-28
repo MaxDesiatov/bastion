@@ -111,7 +111,7 @@ module.exports = function(grunt) {
                     ['clean:debug',
                     'build:debug',
                     // 'expressServer:debug',
-                    // 'watch'
+                    'watch'
                     ]);
 
   grunt.registerTask('server:dist', "Build and preview a minified & production-ready version of your app.", [
@@ -138,14 +138,14 @@ module.exports = function(grunt) {
   // =================================
 
   grunt.registerTask('build:dist', filterAvailable([
-                     'createResultDirectory', // Create directoy beforehand, fixes race condition
+                     // 'createResultDirectory', // Create directoy beforehand, fixes race condition
                      'fancySprites:create',
                      'concurrent:buildDist', // Executed in parallel, see config below
                      ]));
 
   grunt.registerTask('build:debug', filterAvailable([
                      'jshint:tooling',
-                     'createResultDirectory', // Create directoy beforehand, fixes race condition
+                     // 'createResultDirectory', // Create directoy beforehand, fixes race condition
                      'fancySprites:create',
                      'concurrent:buildDebug', // Executed in parallel, see config below
                      ]));
