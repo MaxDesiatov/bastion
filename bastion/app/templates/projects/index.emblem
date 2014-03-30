@@ -1,3 +1,7 @@
 div.row
   div.col-md-11
     h3 Projects
+
+  div.col-md-1
+    a.table-new#user-new.btn.btn-primary.pull-right title='new user' click='createProject'
+      i.fa.fa-plus

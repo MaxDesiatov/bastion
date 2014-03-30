@@ -1,4 +1,4 @@
 UsersIndexRoute = Ember.Route.extend
-  model: -> this.store.find('user')
+  model: -> @store.find 'user'
 
 `export default UsersIndexRoute`
