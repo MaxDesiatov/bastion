@@ -3,12 +3,12 @@
     h3 User Management
 
   .col-md-1
-    a.table-new#user-new.btn.btn-default.pull-right title='new user' click='createUser'
+    a.table-new.btn.btn-default.pull-right title='new user' click='createUser'
       i.fa.fa-plus
 
 .row
-  .col-md-12#user-table
-    table.table
+  .col-md-12
+    table.table.user-table
       tr
         th Username
         th First Name
@@ -26,17 +26,17 @@
               = input value=lastName
             td.vmiddle = group
             td.edit
-              a.btn.btn-default{action 'saveChanges'} title='save'
-                i.fa.fa-check
               a.btn.btn-default{action 'stopEdit'} title='remove'
                 i.fa.fa-times
+              a.btn.btn-default{action 'saveChanges'} title='save'
+                i.fa.fa-check
           else
             td.vmiddle = name
             td.vmiddle = firstName
             td.vmiddle = lastName
             td.vmiddle = group
             td.edit
-              a.btn.btn-default{action 'startEdit'} title='edit'
-                i.fa.fa-edit
               a.btn.btn-default{action 'removeModel'} title='remove'
                 i.fa.fa-trash-o
+              a.btn.btn-default{action 'startEdit'} title='edit'
+                i.fa.fa-edit

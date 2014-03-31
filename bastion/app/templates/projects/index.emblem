@@ -3,15 +3,22 @@
     h3 Projects
 
   .col-md-1
-    a.table-new#user-new.btn.btn-default.pull-right title='new user' click='createProject'
+    a.table-new.btn.btn-default.pull-right title='new user' click='createProject'
       i.fa.fa-plus
 
-each
+each itemController='project'
   .panel.panel-default
     .panel-heading
-      span = name
-      .pull-right: a.project-edit{action 'startEdit'}
-          i.fa.fa-edit
-    ul.list-group
-      each conf in configurations
-        li.list-group-item = conf.name
+      if isEditing
+        = input value=name
+        .btn-noborder.pull-right: a.project-edit{action 'saveChanges'}
+          i.fa.fa-check
+        .btn-noborder.pull-right: a.project-edit{action 'stopEdit'}
+          i.fa.fa-times
+      else
+        span = name
+        .pull-right: a.project-edit{action 'startEdit'}
+            i.fa.fa-edit
+  each conf in configurations
+    .row: .col-md-10.col-md-offset-1
+      .panel.panel-default: .panel-body = conf.name
