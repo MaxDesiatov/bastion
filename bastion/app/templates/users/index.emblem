@@ -1,13 +1,13 @@
-div.row
-  div.col-md-11
+.row
+  .col-md-11
     h3 User Management
 
-  div.col-md-1
-    a.table-new#user-new.btn.btn-primary.pull-right title='new user' click='createUser'
+  .col-md-1
+    a.table-new#user-new.btn.btn-default.pull-right title='new user' click='createUser'
       i.fa.fa-plus
 
-div.row
-  div.col-md-12#user-table
+.row
+  .col-md-12#user-table
     table.table
       tr
         th Username
@@ -38,5 +38,5 @@ div.row
             td.edit
               a.btn.btn-default{action 'startEdit'} title='edit'
                 i.fa.fa-edit
-              a.btn.btn-default{action 'removeUser'} title='remove'
+              a.btn.btn-default{action 'removeModel'} title='remove'
                 i.fa.fa-trash-o

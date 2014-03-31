@@ -1,7 +1,17 @@
-div.row
-  div.col-md-11
+.row
+  .col-md-11
     h3 Projects
 
-  div.col-md-1
-    a.table-new#user-new.btn.btn-primary.pull-right title='new user' click='createProject'
+  .col-md-1
+    a.table-new#user-new.btn.btn-default.pull-right title='new user' click='createProject'
       i.fa.fa-plus
+
+each
+  .panel.panel-default
+    .panel-heading
+      span = name
+      .pull-right: a.project-edit{action 'startEdit'}
+          i.fa.fa-edit
+    ul.list-group
+      each conf in configurations
+        li.list-group-item = conf.name
