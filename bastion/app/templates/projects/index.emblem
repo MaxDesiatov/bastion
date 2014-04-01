@@ -9,7 +9,8 @@
 each itemController='project'
   .panel.panel-default: .panel-heading
     if isEditing
-      = input value=name
+      = input value=name placeholder='project name' classNames='inline-edit'
+      = input value=sourceURL placeholder='source repository URL' classNames='inline-edit url-input'
       .edit-block.pull-right
         .btn-noborder: a.project-edit{action 'removeModel'}
           i.fa.fa-trash-o
@@ -33,11 +34,12 @@ each itemController='project'
             i.fa.fa-edit
   if isExpanded
     each conf in configurations itemController='configuration'
-      .row: .col-md-11.col-md-offset-1
-        .panel.panel-default
+      .row
+        .configuration-header.panel.panel-default
           .panel-body
             if isEditing
-              = input value=name
+              = input value=name placeholder='configuration name' classNames='inline-edit'
+              = input value=script placeholder='job script' classNames='inline-edit url-input'
               .edit-block.pull-right
                 .btn-noborder: a.project-edit{action 'removeModel'}
                   i.fa.fa-trash-o
