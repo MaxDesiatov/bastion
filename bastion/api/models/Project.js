@@ -9,7 +9,8 @@
 module.exports = {
 
   attributes: {
-    name: 'string'
+    name: 'string',
+    configurations: 'array'
 
   	/* e.g.
   	nickname: 'string'

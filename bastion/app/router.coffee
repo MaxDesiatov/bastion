@@ -1,7 +1,7 @@
 Router = Ember.Router.extend()
 
 Router.reopen
-  location: 'history'
+  location: 'auto'
 
 Router.map ->
   @resource 'projects', path: '/', ->

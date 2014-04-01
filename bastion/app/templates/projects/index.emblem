@@ -7,18 +7,46 @@
       i.fa.fa-plus
 
 each itemController='project'
-  .panel.panel-default
-    .panel-heading
-      if isEditing
-        = input value=name
-        .btn-noborder.pull-right: a.project-edit{action 'saveChanges'}
-          i.fa.fa-check
-        .btn-noborder.pull-right: a.project-edit{action 'stopEdit'}
+  .panel.panel-default: .panel-heading
+    if isEditing
+      = input value=name
+      .edit-block.pull-right
+        .btn-noborder: a.project-edit{action 'removeModel'}
+          i.fa.fa-trash-o
+        .btn-noborder: a.project-edit{action 'stopEdit'}
           i.fa.fa-times
-      else
-        span = name
-        .pull-right: a.project-edit{action 'startEdit'}
+        .btn-noborder: a.project-edit{action 'saveChanges'}
+          i.fa.fa-check
+    else
+      span = name
+      .edit-block.pull-right
+        span #{inflect configurations.length 'configuration' 'configurations' true}
+        .btn-noborder: a.project-edit{action 'createConfiguration'}
+          i.fa.fa-plus
+        if isExpanded
+          .btn-noborder: a.project-edit{action 'collapse'}
+            i.fa.fa-compress
+        else
+          .btn-noborder: a.project-edit{action 'expand'}
+            i.fa.fa-expand
+        .btn-noborder: a.project-edit{action 'startEdit'}
             i.fa.fa-edit
-  each conf in configurations
-    .row: .col-md-10.col-md-offset-1
-      .panel.panel-default: .panel-body = conf.name
+  if isExpanded
+    each conf in configurations itemController='configuration'
+      .row: .col-md-11.col-md-offset-1
+        .panel.panel-default
+          .panel-body
+            if isEditing
+              = input value=name
+              .edit-block.pull-right
+                .btn-noborder: a.project-edit{action 'removeModel'}
+                  i.fa.fa-trash-o
+                .btn-noborder: a.project-edit{action 'stopEdit'}
+                  i.fa.fa-times
+                .btn-noborder: a.project-edit{action 'saveChanges'}
+                  i.fa.fa-check
+            else
+              span = conf.name
+              .edit-block.pull-right
+                .btn-noborder: a.project-edit{action 'startEdit'}
+                    i.fa.fa-edit

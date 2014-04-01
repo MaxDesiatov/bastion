@@ -21,6 +21,8 @@
 
     <!-- @if dist=false -->
     <script src="/vendor/handlebars/handlebars.js"></script>
+    <script src="/vendor/swag/lib/swag.js"></script>
+
     <script src="/vendor/ember/ember.js"></script>
     <!-- @endif --><!-- @if dist=true -->
     <script src="/vendor/handlebars/handlebars.runtime.js"></script>
@@ -39,6 +41,7 @@
 
     <script>
     window.socket = io.connect();
+    Swag.registerHelpers();
     </script>
   <!-- build:js(tmp/result) /assets/app.min.js -->
 

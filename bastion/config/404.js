@@ -14,6 +14,7 @@ module.exports[404] = function pageNotFound(req, res) {
    * work just like their Express equivalents to handle HTTP requests, they also simulate
    * the same interface for receiving socket messages.
    */
+  console.log('404: req.url is ' + req.url);
   var statusCode = 200;
   var result = {
     status: statusCode
